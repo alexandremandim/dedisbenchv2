@@ -28,3 +28,13 @@ benchore/DEDISbench
 *.Po
 *.o
 .dirstamp
+./INSTALL
+populate/.deps/*
+benchcore/duplicates/.deps/DEDISbench-duplicatedist.Po
+utils/random/.deps/DEDISbench-random.Po
+utils/db/.deps/DEDISbench-berk.Po
+populate/.deps/DEDISbench-populate.Po
+benchcore/sharedmem/.deps/DEDISbench-sharedmem.Po
+benchcore/accesses/.deps/DEDISbench-iodist.Po
+benchcore/.deps/DEDISbench-io.Po
+INSTALL
