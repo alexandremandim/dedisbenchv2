@@ -38,3 +38,4 @@ benchcore/sharedmem/.deps/DEDISbench-sharedmem.Po
 benchcore/accesses/.deps/DEDISbench-iodist.Po
 benchcore/.deps/DEDISbench-io.Po
 INSTALL
+.vscode/
