@@ -30,6 +30,8 @@
 #include "io/plotio.h"
 #include "utils/utils.h"
 
+#include "libGenerator/generatorW.h"
+
 //time elapsed since last I/O
 long lap_time(struct timeval *base) {
 	struct timeval tv;
