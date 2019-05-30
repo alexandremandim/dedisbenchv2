@@ -14,6 +14,9 @@ AC_PROG_MAKE_SET
 AM_INIT_AUTOMAKE
 AM_PROG_CC_C_O
 
+AC_LANG([C++])
+AC_HEADER_STDC
+
 # Checks for libraries.
 
 AC_CHECK_LIB([db], [main])
@@ -21,7 +24,7 @@ AC_CHECK_LIB([ssl], [main])
 AC_CHECK_LIB([crypto], [main])
 
 # Checks for header files.
-AC_CHECK_HEADERS([fcntl.h inttypes.h malloc.h stdint.h stdlib.h string.h strings.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([tuple vector fcntl.h inttypes.h malloc.h stdint.h stdlib.h string.h strings.h sys/time.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
@@ -32,6 +35,9 @@ AC_TYPE_SIZE_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 
+LT_INIT
+#AC_CONFIG_MACRO_DIRS([m4])
+
 # Checks for library functions.
 AC_FUNC_FORK
 AC_FUNC_MALLOC
@@ -39,6 +45,6 @@ AC_FUNC_MMAP
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([bzero gettimeofday memset mkdir munmap rmdir strchr strdup strtol])
 
-AC_CONFIG_FILES([Makefile
+AC_CONFIG_FILES([libGenerator/Makefile Makefile
                  utils/random/randomgen/Makefile])
 AC_OUTPUT
