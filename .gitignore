@@ -3,6 +3,7 @@
 .vscode/
 autom4te.cache/
 *.o
+*.Po
 *.lo
 *.obj
 *.la
@@ -45,3 +46,8 @@ DEDISbench
 DEDISgen
 DEDISgenutils
 stamp-h1
+alex/
+*.Po
+benchcore/.deps/DEDISbench-io.Po
+benchcore/.deps/DEDISbench-io.Po
+results/
