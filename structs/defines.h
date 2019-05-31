@@ -82,10 +82,14 @@ struct stats{
 
 struct user_confs{
 
+	uint64_t input_total_blocks;
+	uint64_t compression_to_achieve;
+	uint64_t percentage_analyze;
+
 	//Block size in bytes default 4096
 	uint64_t block_size;
-	//total blocks to be addressed at file
-    uint64_t totblocks;
+	//total blocks to be addressed at file - conf.filesize/conf.block_size
+    uint64_t totblocks; /* Blocos totais por ficheiro: conf.totblocks = conf.filesize/conf.block_size; */
 
 	int start;
 	int finish;
