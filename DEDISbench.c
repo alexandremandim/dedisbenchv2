@@ -213,7 +213,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 				uint64_t idwrite=0;	 
 				struct block_info info_write;	
 
-				iooffset=write_request(g, buf,conf, info, &stat, idproc, &info_write);
+				iooffset=write_request2(g, buf,conf, info, &stat, idproc, &info_write);
 
 				idwrite=info_write.cont_id;
 
@@ -736,6 +736,15 @@ static int config_handler(void* config, const char* section, const char* name, c
 	else if(MATCH("execution", "filesize")){
 		conf->filesize = atoll(value);
 	}
+	else if(MATCH("execution", "input_total_blocks")){
+		conf->input_total_blocks = atoll(value);
+	}
+	else if(MATCH("execution", "compression_to_achieve")){
+		conf->compression_to_achieve = atoll(value);
+	}
+	else if(MATCH("execution", "percentage_analyze")){
+		conf->percentage_analyze = atoll(value);
+	}
 	else if(MATCH("results", "tempfilespath")){
 		strcpy(conf->tempfilespath,value);
 	}
@@ -777,8 +786,8 @@ static int config_handler(void* config, const char* section, const char* name, c
 int main(int argc, char *argv[]){
 
 	uint64_t **mem=malloc(sizeof(uint64_t*));
-    uint64_t sharedmem_size;
-    int fd_shared;
+	uint64_t sharedmem_size;
+	int fd_shared;
 	int confarg = 0;
 	generator_t *g;
 
@@ -802,7 +811,7 @@ int main(int argc, char *argv[]){
 	bzero(conf.outputfile,PATH_SIZE);
 	
 
-   	while ((argc > 1) && (argv[1][0] == '-'))
+  while ((argc > 1) && (argv[1][0] == '-'))
 	{
 		switch (argv[1][1])
 		{
@@ -965,6 +974,25 @@ int main(int argc, char *argv[]){
 		conf.ratiow=conf.ratiow/1e6;
 	}
 
+	/* Compression checks */
+	if(conf.compression_to_achieve < 1 || conf.compression_to_achieve > 99){
+		printf("compression_to_achieve value must belong to the range of [1,99]\n");
+		usage();
+		exit(0);
+	}
+
+	if(conf.percentage_analyze < 1 || conf.percentage_analyze > 99){
+		printf("percentage_analyze value must belong to the range of [1,99]\n");
+		usage();
+		exit(0);
+	}
+
+	if(conf.input_total_blocks < 1){
+		printf("input_total_blocks value must be higher than 0\n");
+		usage();
+		exit(0);
+	}
+
 	//convert to bytes
 	conf.filesize=conf.filesize*1024*1024;
 
@@ -984,40 +1012,25 @@ int main(int argc, char *argv[]){
 
 		//get global information about duplicate and unique blocks
 		printf("loading duplicates distribution %s...\n",conf.distfile);
-		get_distribution_stats(&info, conf.distfile);
-		
-		
+		get_distribution_stats(&conf, g, &info, conf.distfile, conf.distout);
 
 		if(conf.distout==1 || conf.integrity>=1){
 				loadmmap(mem,&sharedmem_size,&fd_shared, &info, &conf);
 		}else{
-				loadmem(&info);
+				//loadmem(&info);
 		}
-		//load duplicate array for using in the benchmark
-		load_duplicates(&info,conf.distfile);
 	}
 	else{
 		//get global information about duplicate and unique blocks
 		printf("loading duplicates distribution %s...\n",DFILE);
-		get_distribution_stats(&info,DFILE);
+		get_distribution_stats(&conf, g, &info, DFILE, conf.distout);
 
 		if(conf.distout==1 || conf.integrity>=1){
 			loadmmap(mem,&sharedmem_size,&fd_shared, &info, &conf);
 		}else{
-			loadmem(&info);
+			//loadmem(&info);
 		}
-
-		//load duplicate array for using in the benchmark
-		load_duplicates(&info, DFILE);
 	}
-	g = get_generator2(4096, 100000, 5, 50, "/home/alexandre/Desktop/teste.txt");
-	int i = initialize(g);
-	if(i != 1){printf("Error: initialize generator.\n"); exit(0);}
-	else{printf("Inicalizado com sucesso.\n");}
-
-	//printf("distinct blocks %llu number unique blocks %llu number duplicates %llu\n",(long long unsigned int)total_blocks, (long long unsigned int)unique_blocks,(long long unsigned int)duplicated_blocks);
-	load_cumulativedist(&info, conf.distout);
-
 
 	//writes can be performed over a populated file (populate=1)
 	//this functionality can be disabled if the files are already populated (populate=0)
