@@ -12,6 +12,7 @@
 
 #define TMP_FILE "dedisbench_0010test"
 
+#include "../libGenerator/generatorW.h"
 
 //Open rawdevice to write
 int open_rawdev(char* rawpath, struct user_confs *conf);
@@ -23,7 +24,7 @@ int create_pfile(int procid, struct user_confs *conf);
 int destroy_pfile(int procid, struct user_confs *conf);
 
 //populate files/dev
-void populate(struct user_confs *conf, struct duplicates_info *info);
+void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *info);
 
 
 void check_integrity(struct user_confs *conf, struct duplicates_info *info);

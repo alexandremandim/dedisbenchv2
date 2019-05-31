@@ -51,3 +51,6 @@ alex/
 benchcore/.deps/DEDISbench-io.Po
 benchcore/.deps/DEDISbench-io.Po
 results/
+conf/defconf.ini
+conf/defconf.ini
+conf/testeAlex

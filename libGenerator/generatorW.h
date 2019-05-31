@@ -6,6 +6,7 @@
 extern "C" {
 #endif
 
+#include "../benchcore/duplicates/duplicatedist.h"
 struct generator;
 typedef struct generator generator_t;
 
@@ -14,7 +15,7 @@ generator_t *get_generator2(unsigned int blockSize, unsigned int blocosToGenerat
     unsigned int compression_percentage_between_blocks, char* readPath);
 void generator_destroy(generator_t *g);
 int initialize(generator_t *g);
-void nextBlock(generator_t *g, unsigned char* buffer);
+void nextBlock(generator_t *g, unsigned char* buffer, struct block_info *info_write);
 
 #ifdef __cplusplus
 }

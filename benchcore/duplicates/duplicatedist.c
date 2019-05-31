@@ -12,6 +12,8 @@
 
 #include "duplicatedist.h"
 #include "../../utils/random/random.h"
+#include "../../libGenerator/generatorW.h"
+
 
 
 void get_distribution_stats(struct duplicates_info *info, char* fname){
@@ -261,7 +263,6 @@ uint64_t search(struct duplicates_info *info, uint64_t value,int low, int high, 
 
 }
 
-
 uint64_t get_contentid(struct duplicates_info *info){
 
   //generates a random number between 0 and the total of blocks of the dataset
@@ -397,7 +398,7 @@ int compare_blocks(char* buf, struct block_info infowrite, uint64_t block_size, 
 
 // Used to know the content of the next block that will be generated
 // Follows the duplicate distribution
-void get_writecontent(char *buf, struct user_confs *conf, struct duplicates_info *info, struct stats *stat, int idproc, struct block_info *info_write){
+void get_writecontent(generator_t *g, char *buf, struct user_confs *conf, struct duplicates_info *info, struct stats *stat, int idproc, struct block_info *info_write){
   
   uint64_t contwrite;
   struct timeval tim;
@@ -448,6 +449,13 @@ void get_writecontent(char *buf, struct user_confs *conf, struct duplicates_info
 
 }
 
+void get_writecontent2(char* buf, generator_t *g, int idproc, struct block_info *info_write){
+
+  nextBlock(g, buf, info_write);
+  info_write->procid = idproc;
+  info_write->ts = -1;
+
+}
 
 int gen_outputdist(struct duplicates_info *info, DB **dbpor,DB_ENV **envpor){
 

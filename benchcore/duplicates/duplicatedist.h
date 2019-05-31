@@ -10,12 +10,15 @@
 #include "../../utils/db/berk.h"
 #include "../../structs/defines.h"
 
+#include "../../libGenerator/generatorW.h"
+
 #define HEADF "results/headerdist"
 
 struct block_info{
 	uint64_t cont_id;
 	int procid;
 	uint64_t ts;
+	int flagUniqueBlock; /* 1 is unique, 0 shoud have copies */
 };
 
 struct duplicates_info{
@@ -66,10 +69,12 @@ void get_distribution_stats(struct duplicates_info *info, char* fname);
 void load_duplicates(struct duplicates_info *info, char* fname);
 void load_cumulativedist(struct duplicates_info *info, int distout);
 uint64_t search(struct duplicates_info *info, uint64_t value,int low, int high, uint64_t *res);
-void get_writecontent(char *buf, struct user_confs *conf, struct duplicates_info *info, struct stats *stat, int idproc, struct block_info *info_write);
+void get_writecontent(generator_t *g, char *buf, struct user_confs *conf, struct duplicates_info *info, struct stats *stat, int idproc, struct block_info *info_write);
 int gen_outputdist(struct duplicates_info *info, DB **dbpor,DB_ENV **envpor);
 int compare_blocks(char* buf, struct block_info infowrite, uint64_t block_size, FILE* fpi, int finalcheck);
 void get_block_content(char* bufaux, struct block_info infowrite, uint64_t block_size);
 int next_block(struct duplicates_info *info, struct block_info *infowrite);
+
+void get_writecontent2(char* buf, generator_t *g, int idproc, struct block_info *info_write);
 
 #endif

@@ -118,7 +118,7 @@ uint64_t dd_populate(char* name, struct user_confs* conf){
 }
 
 
-uint64_t real_populate(int fd, struct user_confs *conf, struct duplicates_info *info, int idproc){
+uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct duplicates_info *info, int idproc){
 
   struct stats stat;
 
@@ -145,7 +145,7 @@ uint64_t real_populate(int fd, struct user_confs *conf, struct duplicates_info *
 
 
 
-    get_writecontent(buf, conf, info, &stat, 0, &info_write);
+    get_writecontent(g, buf, conf, info, &stat, 0, &info_write);
 
 
     if(conf->distout==1){
@@ -183,7 +183,7 @@ uint64_t real_populate(int fd, struct user_confs *conf, struct duplicates_info *
 
 
 //populate files with content
-void populate(struct user_confs *conf, struct duplicates_info *info){
+void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *info){
 
   int i;
   int fd;
@@ -225,7 +225,7 @@ void populate(struct user_confs *conf, struct duplicates_info *info){
           printf("populating file %s with realistic content\n",name);
 
           fd = create_pfile(i,conf);
-          bytes_populated += real_populate(fd, conf, info, i);  
+          bytes_populated += real_populate(g, fd, conf, info, i);  
           fsync(fd);     
           close(fd);
 	  	  
@@ -247,7 +247,7 @@ void populate(struct user_confs *conf, struct duplicates_info *info){
       printf("populating device %s with realistic content\n",conf->rawpath);
 
       fd = open_rawdev(conf->rawpath,conf);
-      bytes_populated += real_populate(fd, conf, info, 0);
+      bytes_populated += real_populate(g,fd, conf, info, 0);
       fsync(fd);
       close(fd);
 

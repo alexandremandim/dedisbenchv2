@@ -39,9 +39,9 @@ int initialize(generator_t *g){
     return gen->initialize();
 }
 
-void nextBlock(generator_t *g, unsigned char* buffer){
+void nextBlock(generator_t *g, unsigned char* buffer, struct block_info *info_write){
     if(g == NULL || g->obj == NULL) return;
     
     Generator *gen = static_cast<Generator *>(g->obj);
-    gen->nextBlock(buffer);
+    gen->nextBlock(buffer, info_write);
 }

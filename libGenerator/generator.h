@@ -4,22 +4,23 @@
 #include <vector>
 #include <tuple>
 #include <string>
+#include "../benchcore/duplicates/duplicatedist.h"
 
 using namespace std;
 
 class Linha{
     public:
-    unsigned int nrCopies, nrBlocks, nrBase;
-    std::vector<double> compression; 
+        unsigned int nrCopies, nrBlocks, nrBase;
+        std::vector<double> compression; 
 };
 
 class Generator {
-      public:
+    public:
 
         Generator();
         Generator(unsigned int blockSize, unsigned int blocosToGenerate, unsigned int percentage_unique_blocks_analyze, unsigned int compression_percentage_between_blocks, string readPath);
-        void nextBlock(unsigned char* buffer);
-        /* Read input file for duplicate and compression distribution.
+        void nextBlock(unsigned char* buffer, struct block_info *info_write);
+        /* Read input file for duplicate and cokmpression distribution.
             Generate Models to generate data
             * path: path to input file
             * block_size: size of each block

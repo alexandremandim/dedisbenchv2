@@ -251,7 +251,7 @@ Generator::Generator(unsigned int blockSize, unsigned int blocosToGenerate,
     globalArgs.readPath = readPath;
 }
 
-void Generator::nextBlock(unsigned char* buffer) {
+void Generator::nextBlock(unsigned char* buffer, struct block_info *info_write) {
 
     Linha linhaAleatoria = getLinha();
     int myCompression = 0;
@@ -260,7 +260,12 @@ void Generator::nextBlock(unsigned char* buffer) {
     myCompression = giveMyCompression(linhaAleatoria, randomBlockID);
 
     unsigned int blockKey = randomBlockID + linhaAleatoria.nrBase;
+
     generate_data(buffer, blockKey, myCompression);
+
+    /* Tenho que preencher a estrutura */
+    info_write->cont_id = randomBlockID; /* Block ID */
+    linhaAleatoria.nrCopies == 0 ? info_write->flagUniqueBlock = 1 : info_write->flagUniqueBlock = 0;   /* Flag block has 0 copies */
 }
 
 /* Read input file for duplicate and compression distribution.
