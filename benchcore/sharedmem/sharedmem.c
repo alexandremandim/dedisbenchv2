@@ -12,14 +12,6 @@
 #include <sys/mman.h>
 
 
-int loadmem(struct duplicates_info *info){
-
-      info->sum=malloc(sizeof(uint64_t)*info->duplicated_blocks);
-      info->stats=malloc(sizeof(uint64_t)*info->duplicated_blocks);
-      return 1;
-
-}
-
 int loadmmap(uint64_t **mem,uint64_t *sharedmem_size,int *fd_shared, struct duplicates_info *info, struct user_confs *conf){
 
    //Name of shared memory file
@@ -83,10 +75,10 @@ int loadmmap(uint64_t **mem,uint64_t *sharedmem_size,int *fd_shared, struct dupl
     // Now assign the memory region to each variable
     info->statistics = mem_aux;
     mem_aux=mem_aux+info->duplicated_blocks;
-    info->sum=mem_aux;
-    mem_aux=mem_aux+info->duplicated_blocks;
-    info->stats=mem_aux;
-    mem_aux=mem_aux+info->duplicated_blocks;
+    //info->sum=mem_aux;
+    //mem_aux=mem_aux+info->duplicated_blocks;
+    //info->stats=mem_aux;
+    //mem_aux=mem_aux+info->duplicated_blocks;
     info->zerodups = mem_aux;
     mem_aux=mem_aux+1;
     content_map=(struct block_info *)mem_aux;

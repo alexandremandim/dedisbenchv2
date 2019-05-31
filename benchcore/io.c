@@ -20,13 +20,6 @@ int init_io(struct user_confs *conf, int procid){
   return 0;
 }
 
-uint64_t write_request(generator_t *g, char* buf, struct user_confs *conf, struct duplicates_info *info, struct stats *stat, int idproc, struct block_info *infowrite){
-
-  get_writecontent(g, buf, conf, info, stat, idproc, infowrite);
-
-  return get_ioposition(conf, stat, idproc);
-}
-
 uint64_t write_request2(generator_t *g, char* buf, int idproc, struct block_info *infowrite, struct user_confs *conf, struct stats *stat){
 
   /*Atenção: Nesta versão ignorei o facto de inserir no buffer um timestamp e o id do processo quando ele é único,
