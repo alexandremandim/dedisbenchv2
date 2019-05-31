@@ -274,12 +274,15 @@ void Generator::nextBlock(unsigned char* buffer, struct block_info *info_write) 
  * block_size: size of each block
  * nrBlocksToGenerate: number of blocks generated
  * percentage: percetage of unique blocks used to estimate compression inter blocks
+ * struct info is needed to fill some variables
  * Return 1:ok -1:error
 */
-int Generator::initialize() {
+int Generator::initialize(struct duplicates_info *info) {
     srand (time ( NULL));
     if(globalArgs.blockSize < 4096) return -1;                                                                     
     if(!(globalArgs.percentagem_compressao_entre_blocos >= 1 && globalArgs.percentagem_compressao_entre_blocos <= 100)) return -1; /* Variavel tem q estar no intervalo [1,100] */
+
+    globalArgs.zeroCopiesBlocks = 0; globalArgs.total_unique_blocks = 0;
 
     /* Reading Input File */
     unsigned int nrBaseAux = 0;
@@ -302,6 +305,7 @@ int Generator::initialize() {
 
         if (getline(ss, token, ' ')) {
             newLine.nrCopies = stoi(token);
+
             if (getline(ss, token, ' ')) {
                 probabilidadeLinha = stof(token);
 
@@ -309,6 +313,11 @@ int Generator::initialize() {
                 if(newLine.nrBlocks == 0) newLine.nrBlocks = 1;
                 nrBaseAux = nrBaseAux + newLine.nrBlocks;
             }
+
+            if(newLine.nrCopies == 0){
+                    globalArgs.zeroCopiesBlocks = newLine.nrBlocks; /* Number of unique blocks that doesn't have copies */
+            }
+            globalArgs.total_unique_blocks += newLine.nrBlocks;     /* Sum of all unique blocks */
         }
 
         /* restantes eltos da linha (compressoes) */
@@ -320,11 +329,6 @@ int Generator::initialize() {
         this->weights.push_back(probabilidadeLinha);
     }
 
-    /* Blocos únicos */
-    for (vector<Linha>::iterator it = linhas.begin() ; it != linhas.end(); ++it){
-
-            globalArgs.total_unique_blocks += it->nrBlocks;
-    }
 
     std::cout << "Total blocks:\t" << globalArgs.blocosAGerar << "\t" << "Unique blocks:\t" << globalArgs.total_unique_blocks << endl;
 
@@ -333,6 +337,13 @@ int Generator::initialize() {
 
     /* Generating Block Models */
     int returnLoadModels = loadModels();
+
+    /* Fill struct duplicates_info */
+
+    info->zero_copy_blocks = globalArgs.zeroCopiesBlocks;
+    info->duplicated_blocks= globalArgs.total_unique_blocks - globalArgs.zeroCopiesBlocks;
+    info->total_blocks = globalArgs.blocosAGerar;
+    info->u_count = info->duplicated_blocks+1;
 
     return(returnLoadModels);
 }

@@ -28,12 +28,13 @@ class Generator {
             * percentage: percetage of unique blocks used to estimate compression inter blocks
             * Return 1:ok -1:error
         */
-        int initialize();
+        int initialize(struct duplicates_info *info);
 
     private:
     
         struct globalArgs_t {
-            unsigned int blockSize, blocosAGerar, total_unique_blocks, percentage_unique_blocks_analyze, percentagem_compressao_entre_blocos;
+            unsigned int blockSize, blocosAGerar, percentage_unique_blocks_analyze, percentagem_compressao_entre_blocos;
+            unsigned int zeroCopiesBlocks, total_unique_blocks /*unique blocks with copies too*/;
             string readPath;
         } globalArgs;
         tuple<double, double> compressions_inter_blocks_interval;

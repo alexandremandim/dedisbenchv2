@@ -144,8 +144,7 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
     }
 
 
-
-    get_writecontent(g, buf, conf, info, &stat, 0, &info_write);
+    get_writecontent2(buf, g, idproc, &info_write);
 
 
     if(conf->distout==1){
