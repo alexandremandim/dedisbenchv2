@@ -9,7 +9,7 @@ generator_t *get_generator(){
     generator_t* r;
     Generator* g;
 
-    r = (typeof(generator_t*))malloc(sizeof(*r));
+    r = (typeof(r))malloc(sizeof(*r));
     g = new Generator();
     r->obj = g;
     return r;
@@ -20,7 +20,7 @@ generator_t *get_generator2(unsigned int blockSize, unsigned int blocosToGenerat
     generator_t* r;
     Generator* g;
 
-    r = (typeof(generator_t*))malloc(sizeof(*r));
+    r = (typeof(r))malloc(sizeof(*r));
     g = new Generator(blockSize, blocosToGenerate, percentage_unique_blocks_analyze, compression_percentage_between_blocks, string(readPath));
     r->obj = g;
     return r;
