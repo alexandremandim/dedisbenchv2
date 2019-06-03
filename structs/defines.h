@@ -140,7 +140,6 @@ struct user_confs{
 	//File size for process in MB (default 2048)
 	uint64_t filesize;
 	
-
 	uint64_t seed;
 
 	//populate feature, by default is off unless it is a read test

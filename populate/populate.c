@@ -143,20 +143,20 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
       buf = malloc(conf->block_size);
     }
 
-
     get_writecontent2(buf, g, idproc, &info_write);
 
-
     if(conf->distout==1){
-      uint64_t idwrite=info_write.cont_id;
+      uint64_t idwrite = info_write.cont_id;
+      uint64_t indexID = idwrite - info->zero_copy_blocks;
 
-      if(idwrite<info->duplicated_blocks){
-        info->statistics[idwrite]++;
-        if(info->statistics[idwrite]<=1){
+      if(info_write.flagUniqueBlock == 0){  /* It's a ID with >=1 copies */
+        info->statistics[indexID]++; 
+        if(info->statistics[indexID]<=1){
           stat.uni++;
         }
       }
     }
+
     int res = pwrite(fd,buf,conf->block_size,bytes_written);
     if(res<conf->block_size){
       perror("Error populating file");
@@ -173,10 +173,7 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
     
     bytes_written+=conf->block_size;
   }
-
   return bytes_written;
-  
-
 }
 
 
@@ -190,7 +187,7 @@ void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *i
 
   if(conf->mixedIO==1){
   	// If running mixed test with only one proc this will zero
-	// and it wont start the populate
+	  // and it wont start the populate
     nprocs=conf->nprocs/2;
   }
   else{

@@ -29,7 +29,7 @@ struct duplicates_info{
 	//TOtal Number of blocks at the data set
 	uint64_t total_blocks;
 
-	uint64_t *statistics;
+	uint64_t *statistics; /* Statistics it's an array wich each index represents an ID of a duplicated block and has as many entries as many block ID's duplicated */
 
 	//shared mem
 	uint64_t *zerodups;

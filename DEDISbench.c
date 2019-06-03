@@ -213,22 +213,27 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 				uint64_t idwrite=0;	 
 				struct block_info info_write;	
 
-				iooffset=write_request2(g, buf,conf, info, &stat, idproc, &info_write);
+				iooffset=write_request2(g, buf, idproc, &info_write, &conf, &stat);
 
 				idwrite=info_write.cont_id;
 
 				//idwrite is the index of sum where the block belongs
 				//put in statistics this value ==1 to know when a duplicate is found
 				//TODO this depends highly on the id generation and should be transparent
+
+				/* Subtraction is required because the first ID's belongs to blocks with zero copies 
+					and this array only contains information about ID's with copies.*/
+				int statistics_index = info->zero_copy_blocks - idwrite;	
+
 				if(conf->distout==1){
-					if(idwrite<info->duplicated_blocks){	/* Block with copies */
-						info->statistics[idwrite]++;
-						if(info->statistics[idwrite]>1){	/* ID not first time */
+					if(info_write.flagUniqueBlock == 0){	/* Block with copies */
+						info->statistics[statistics_index]++; 
+						if(info->statistics[statistics_index]>1){	/* ID not first time */
 							stat.dupl++;
-							if(info->statistics[idwrite]>=info->topblock_dups){
+							if(info->statistics[statistics_index]>=info->topblock_dups){
 								info->topblock=idwrite;
 							}
-							if(info->statistics[idwrite]<=info->botblock_dups){
+							if(info->statistics[statistics_index]<=info->botblock_dups){
 								info->botblock=idwrite;
 							}
 						}
@@ -418,7 +423,6 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
   }
   close(fd_test);
 
-
   if(stat.t1snap>stat.last_snap_time){
 	  //Write last snap because ther may be some operations missing
 	  if(begin>=ru_begin){
@@ -487,7 +491,6 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 
   //init acesses array
   free(acessesarray);
-
 }
 
 void launch_benchmark(generator_t *g, struct user_confs* conf, struct duplicates_info *info){
