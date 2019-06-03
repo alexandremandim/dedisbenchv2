@@ -144,8 +144,18 @@ int compare_blocks(char* buf, struct block_info infowrite, uint64_t block_size, 
 void get_writecontent2(char* buf, generator_t *g, int idproc, struct block_info *info_write){
 
   nextBlock(g, buf, info_write);
-  info_write->procid = idproc;
-  info_write->ts = -1;
+  
+  if(info_write->flagUniqueBlock == 1){
+    struct timeval tim;
+    gettimeofday(&tim, NULL);
+    uint64_t tunique=tim.tv_sec*1000000+(tim.tv_usec);
+    info_write->ts = tunique;
+    info_write->procid = idproc;
+  }
+  else{
+    info_write->procid=-1;
+    info_write->ts=-1;
+  }
 
 }
 
@@ -163,7 +173,9 @@ int gen_outputdist(struct duplicates_info *info, DB **dbpor,DB_ENV **envpor){
 		//the blocks
 		if(info->statistics[i]==1){
 			*info->zerodups=*info->zerodups+1;
-			fprintf(f, "%lu %lu\n", i, info->statistics[i]);
+
+      int block_id = i + info->zero_copy_blocks; /* ID's start with 0 copies blocks */
+			fprintf(f, "%lu %lu\n", block_id, info->statistics[i]);
 		}
 		if(info->statistics[i]>1){
 
@@ -188,7 +200,7 @@ int gen_outputdist(struct duplicates_info *info, DB **dbpor,DB_ENV **envpor){
 				  //insert counter in the right entry
 				  put_db_print(&ndups,&hvalue,dbpor,envpor);
 			 }
-
+      int block_id = i + info->zero_copy_blocks; /* ID's start with 0 copies blocks */
 			fprintf(f, "%lu %lu\n", i, info->statistics[i]);
 		}
 
