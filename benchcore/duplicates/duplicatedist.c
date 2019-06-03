@@ -30,10 +30,10 @@ void get_distribution_stats(struct user_confs *conf, generator_t *g, struct dupl
 	if(i != 1){printf("Error: initialize generator.\n"); exit(0);}
 
   /* Initialize info->statistics to zero */
-  int i;
-  for(i=1;i<info->duplicated_blocks;i++)
+  int z;
+  for(z=1;z<info->duplicated_blocks;z++)
     if(distout==1)
-    	info->statistics[i]=0;
+    	info->statistics[z]=0;
 
 }
 
@@ -122,7 +122,7 @@ int check_block_content(char* buf, uint64_t block_size){
 /* Utiizado para a integridade */
 int compare_blocks(char* buf, struct block_info infowrite, uint64_t block_size, FILE* fpi, int final_check){
 
-  char bufaux[block_size];
+  unsigned char bufaux[block_size];
   int i=0;
   get_block_content(bufaux, infowrite, block_size);
 
