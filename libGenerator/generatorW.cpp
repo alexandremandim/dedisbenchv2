@@ -1,5 +1,6 @@
 #include "generator.h"
 #include "generatorW.h"
+#include "../benchcore/duplicates/duplicatedist.h"
 
 struct generator{
     void* obj;
