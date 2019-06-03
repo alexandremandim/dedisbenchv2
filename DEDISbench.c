@@ -73,6 +73,7 @@ FILE* create_plog(int procid){
 //run a a peak test
 void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype, struct user_confs* conf, struct duplicates_info *info){
 
+
   int fd_test;
   int procid_r=idproc;
   FILE *fpi=NULL;
@@ -185,6 +186,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 
   //while bench time has not ended or amount of data is not written
   while(begin<end){
+		
   	//for nominal testes only
    	//number of operations performed for all processes
    	//since we are running N processes concurrently at the same I/O rate
@@ -213,9 +215,10 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 				uint64_t idwrite=0;	 
 				struct block_info info_write;	
 
-				iooffset=write_request2(g, buf, idproc, &info_write, &conf, &stat);
+				iooffset=write_request2(g, buf, idproc, &info_write, conf, &stat);
 
 				idwrite=info_write.cont_id;
+				
 
 				//idwrite is the index of sum where the block belongs
 				//put in statistics this value ==1 to know when a duplicate is found
@@ -398,6 +401,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 			idle(4000);
 		}
 
+
 		//add to the total time the time elapsed with this operation
 		time_elapsed+=lap_time(&base);
 
@@ -544,7 +548,7 @@ void launch_benchmark(generator_t *g, struct user_confs* conf, struct duplicates
 			  process_run(g, i, conf->nprocs, conf->ratio, conf->iotype, conf, info);
 		  }
 		  //sleep(10);
-	     exit(0);
+	    exit(0);
 	  }
 	}
 

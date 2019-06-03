@@ -28,6 +28,9 @@ void get_distribution_stats(struct user_confs *conf, generator_t *g, struct dupl
 	g = get_generator2(conf->block_size, conf->input_total_blocks, conf->percentage_analyze , conf->compression_to_achieve, fname);
 	int i = initialize(g, info);
 	if(i != 1){printf("Error: initialize generator.\n"); exit(0);}
+  else{
+    printf("Initialize generator library with success.\n");
+  }
 
   /* Initialize info->statistics to zero */
   int z;
