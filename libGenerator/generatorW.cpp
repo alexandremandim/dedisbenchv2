@@ -1,7 +1,6 @@
 #include "generator.h"
 #include "generatorW.h"
 #include "../benchcore/duplicates/duplicatedist.h"
-
 struct generator{
     void* obj;
 };
@@ -37,7 +36,7 @@ int initialize(generator_t *g, struct duplicates_info *info){
     if(g == NULL || g->obj == NULL) return -1;
     
     Generator *gen = static_cast<Generator *>(g->obj);
-    return gen->initialize(struct duplicates_info *info);
+    return gen->initialize(info);
 }
 
 void nextBlock(generator_t *g, unsigned char* buffer, struct block_info *info_write){
