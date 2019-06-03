@@ -1,0 +1,4 @@
+-> struct duplicates_info : partilhada entre todos os processos
+-> struct user_confs :      partilhada entre processos
+    totblocks
+    numberops - nr de operações

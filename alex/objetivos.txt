@@ -1,0 +1,29 @@
+Olhar para o do resumo do dedisbench e basear-me por aqui.
+Dizer que tinhamos o dedisbench e explicar as alterações.
+Criar o abstract até esta 4ª feira.
+Até dia 10 enviar a versão completa do artigo p o jop/joao.
+
+Estrutura do artigo:
+1 Introdução
+2 Dedisbench versao compressao
+2.1 Background do dedisbench (explicar o q o dedsibench era e explicar q neste artigo expandimos com estes modulos.)
+2.2
+3 Avaliação
+    Explicar setup de Avaliação
+    Resultados
+Faz sentido mostrar uma secção de implementação c/ algoritmos, etc.
+Related Work
+Conclusões
+Limite paginas: 12
+
+Proxima quarta: titulo, resumo e nome de autores
+
+Avaliação: 
+	-Mostrar q o conteudo é realista (do q o dedisbench)
+	-Conseguimos fazer mtas operacoes p/ seg (trhoughput mais q sdgen)
+-> (1º teste:) Teste da rapidez (ciclo a chamar a função)
+	5 runs (p depois tirar uma media do desvio padrão) c/ uma a fazer 1000000 de operações, uma com o get_write_content (versão anterior) e get_write_content2: isto diz se pioramos mta rapidez em relação ao anteiorr. Vamos analisar cpu e ram (dstat), aquilo gera um csv e depois fazemos parse.
+-> Correr 2 testes a comparar as 2 versoes do dedisbench (Escritas: Sequenciais e aleatória). Fazer umas 5 runs p/ cada c/ 32 gb (tem a ver com o SO). Escolher 3 datasets Nao escquecer usar sempre o dstat
+
+
+Os testes vou usar so um processo, depois se tiver tempo era porreiro comparar com 4

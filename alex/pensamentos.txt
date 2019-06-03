@@ -1,0 +1,29 @@
+Quando a flag distout é ativada, vou ter que fazer grandes alterações.
+Com testes de integridade também..
+Fiquei neste ponto, de seguida fazer estas alterações, uma possível solução é tirar ao ID 
+o nr de blocos q existem não duplicados, ou seja, fazer um shift...
+Outro problema é o input agora ser em percentagens e não fixo....
+
+-> o user_confs->total_blocks nesta versão é calculado através do input file, na 
+2ª versão como estamos a trabalhar em percentagens deve ser passado?
+R: deve ser passado no ficheiro de input
+
+Testes de integridade: Tenho que verificar se os blocos que foram escritos estão corretos...
+
+
+-> O get_write_content "antigo" p/ o caso de blocos c/ 0 copias, além do ID do bloco escrevia 
+o nr proc e 1 timestamp p/ garantir que era unico entre
+processos/benchmarks concorrentes. No meu caso, quando seleciono um ID de um bloco com 0 copias, 
+volto a gerar um número completamente aleatório e é esse
+que é inserido no buffer, gerando mais aleatoriedade, necessito na mesma de escrever o 
+timestamp/nrproc?
+R: Este timestamp/nrproc é necessário para o teste de integridade. Basicamente este teste de integridade 
+"memoriza" as posicções onde escreveu e o que foi escrito, e depois verifica se o que lá está escrito é
+o mesmo que ele "memorizou", daí ser necessário guardar estas ou outras informações.
+
+skype: jtpaulo
+
+-> Analisar com o dstat cpu e memoria ram.
+
+ssh gsd@cloud85
+pass: 123456

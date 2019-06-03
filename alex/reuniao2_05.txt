@@ -1,0 +1,15 @@
+Função de transformação para substituir inserir o ID no inicio dos blocos. Isto porque se anaisarmos com um tamanho diferente daquele que geramos, nao teriamos um resultado tão fora do pretendido.
+
+Referir na documentação, se alguém quiser alterar os algoritmos (por exemplo, inserir o ID no inicio, ou a forma como geramos blocos com uma determinada compressao) ser só alterar a função indicada.
+
+Ver porque quando gerava com varios modelos, porque que estourava a memoria.
+
+Utilizar o dataset que comprime menos entre blocos, e mostrar que diferneça faz se usar 100 ou 10 vetor modelos, por exemplo.
+
+Inforum -> PT 07/06 : Compressão intra e inter blocos. Motivar mto bem porque se anda a fazer isto. Motivação, Arquitetura do Gerador, Avaliação e Integração no Dedisbench, tabelas que compara accuracy de duplicados e compressão - velocidade, comparação com o dedisbench. 
+27/05 - Texto para os orientadores validarem.
+12 paginas - lncs
+Table of contents -> Para a semana. Olhar para o artido do dedisbench (conferencia), para me tentar organizar por ali.
+
+Mais adiante:
+zfs, opendedup, borgbackup (dedup e compressao), 
