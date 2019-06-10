@@ -32,14 +32,14 @@ void generator_destroy(generator_t *g){
 	free(g);
 }
 
-int initialize(generator_t *g, struct duplicates_info *info){
+int initialize(generator_t *g, duplicates_info *info){
     if(g == NULL || g->obj == NULL) return -1;
     
     Generator *gen = static_cast<Generator *>(g->obj);
     return gen->initialize(info);
 }
 
-void nextBlock(generator_t *g, unsigned char* buffer, struct block_info *info_write){
+void nextBlock(generator_t *g, unsigned char* buffer, block_info *info_write){
     if(g == NULL || g->obj == NULL) return;
     
     Generator *gen = static_cast<Generator *>(g->obj);

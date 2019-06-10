@@ -19,7 +19,7 @@ class Generator {
 
         Generator();
         Generator(unsigned int blockSize, unsigned int blocosToGenerate, unsigned int percentage_unique_blocks_analyze, unsigned int compression_percentage_between_blocks, string readPath);
-        void nextBlock(unsigned char* buffer, struct block_info *info_write);
+        void nextBlock(unsigned char* buffer, block_info *info_write);
         /* Read input file for duplicate and cokmpression distribution.
             Generate Models to generate data
             * path: path to input file
@@ -28,7 +28,7 @@ class Generator {
             * percentage: percetage of unique blocks used to estimate compression inter blocks
             * Return 1:ok -1:error
         */
-        int initialize(struct duplicates_info *info);
+        int initialize(duplicates_info *info);
 
     private:
     

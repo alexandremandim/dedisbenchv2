@@ -1,14 +1,14 @@
+
 /* Generator Wrapper to use in C */
 #ifndef __GENERATORW_H__
 #define __GENERATORW_H__
+
+#include "../benchcore/duplicates/duplicatedist.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "../benchcore/duplicates/duplicatedist.h"
-struct generator;
-typedef struct generator generator_t;
 
 generator_t *get_generator();
 generator_t *get_generator2(unsigned int blockSize, unsigned int blocosToGenerate, unsigned int percentage_unique_blocks_analyze, 

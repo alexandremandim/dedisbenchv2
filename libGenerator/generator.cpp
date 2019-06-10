@@ -251,7 +251,7 @@ Generator::Generator(unsigned int blockSize, unsigned int blocosToGenerate,
     globalArgs.readPath = readPath;
 }
 
-void Generator::nextBlock(unsigned char* buffer, struct block_info *info_write) {
+void Generator::nextBlock(unsigned char* buffer, block_info *info_write) {
 
     Linha linhaAleatoria = getLinha();
     int myCompression = 0;
@@ -277,7 +277,7 @@ void Generator::nextBlock(unsigned char* buffer, struct block_info *info_write) 
  * struct info is needed to fill some variables
  * Return 1:ok -1:error
 */
-int Generator::initialize(struct duplicates_info *info) {
+int Generator::initialize(duplicates_info *info) {
     srand (time ( NULL));
     if(globalArgs.blockSize < 4096) return -1;                                                                     
     if(!(globalArgs.percentagem_compressao_entre_blocos >= 1 && globalArgs.percentagem_compressao_entre_blocos <= 100)) return -1; /* Variavel tem q estar no intervalo [1,100] */

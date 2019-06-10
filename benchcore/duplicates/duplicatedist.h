@@ -9,19 +9,21 @@
 #include <stdint.h>
 #include "../../utils/db/berk.h"
 #include "../../structs/defines.h"
-
-#include "../../libGenerator/generatorW.h"
+//#include "../../libGenerator/generatorW.h"
 
 #define HEADF "results/headerdist"
 
-struct block_info{
+struct generator;
+typedef struct generator generator_t;
+
+typedef struct block_info{
 	uint64_t cont_id;
 	int procid;
 	uint64_t ts;
 	int flagUniqueBlock; /* 1 is unique, 0 shoud have copies */
-};
+} block_info;
 
-struct duplicates_info{
+typedef struct duplicates_info{
 
 	//Number of distinct content blocks with duplicates
 	uint64_t duplicated_blocks;
@@ -54,14 +56,14 @@ struct duplicates_info{
   	struct block_info last_unique_block;
   	struct block_info last_block_written;
 
-};
+} duplicates_info;
 
-void get_distribution_stats(struct user_confs *conf, generator_t *g, struct duplicates_info *info, char* fname, int distout);
-int gen_outputdist(struct duplicates_info *info, DB **dbpor,DB_ENV **envpor);
-int compare_blocks(char* buf, struct block_info infowrite, uint64_t block_size, FILE* fpi, int finalcheck);
-void get_block_content(char* bufaux, struct block_info infowrite, uint64_t block_size);
-int next_block(struct duplicates_info *info, struct block_info *infowrite);
+void get_distribution_stats(struct user_confs *conf, generator_t *g, duplicates_info *info, char* fname, int distout);
+int gen_outputdist(duplicates_info *info, DB **dbpor,DB_ENV **envpor);
+int compare_blocks(unsigned char* buf, block_info infowrite, uint64_t block_size, FILE* fpi, int finalcheck);
+void get_block_content(unsigned char* bufaux, block_info infowrite, uint64_t block_size);
+int next_block(duplicates_info *info, block_info *infowrite);
 
-void get_writecontent2(char* buf, generator_t *g, int idproc, struct block_info *info_write);
+void get_writecontent2(unsigned char* buf, generator_t *g, int idproc, block_info *info_write);
 
 #endif
