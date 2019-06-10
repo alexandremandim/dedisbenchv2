@@ -256,8 +256,6 @@ int search_dir(char* path){
  return 0;
 }
 
-
-
 int gen_output(DB **dbpor,DB_ENV **envpor,DB **dbprint,DB_ENV **envprint){
 
 	//Iterate through original DB and insert in print DB
@@ -314,7 +312,6 @@ int gen_output(DB **dbpor,DB_ENV **envpor,DB **dbprint,DB_ENV **envprint){
 
 	return 0;
 }
-
 
 //Aux function to split the string with multiple sizes
 void str_split(char* a_str)

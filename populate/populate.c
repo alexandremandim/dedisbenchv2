@@ -133,7 +133,7 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
   uint64_t bytes_written=0;
   while(bytes_written<conf->filesize){
 
-    char* buf;
+    unsigned char* buf;
     struct block_info info_write;
 
     //memory block
@@ -259,7 +259,7 @@ void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *i
 
 int file_integrity(int fd, struct user_confs *conf, struct duplicates_info *info, int idproc, FILE* fpi){
 
-  char *buf;
+  unsigned char *buf;
   int res=0;
 
 
@@ -279,8 +279,8 @@ int file_integrity(int fd, struct user_confs *conf, struct duplicates_info *info
     //printf("pread size %lu  offset %lu res %d...\n", conf->block_size, bytes_read, res);
     if(res<=0){
       //perror("Error reading in integrity tests\n");
-      printf("Reading block in offset %llu, with size %d returned %d. Maybe the files was not populated correctly?\n", bytes_read, conf->block_size, res);
-      fprintf(fpi, "Reading block in offset %llu, with size %d returned %d. Maybe the files was not populated correctly? The next integrity error is related with this message: ", bytes_read, conf->block_size, res);   
+      printf("Reading block in offset %lu, with size %lu returned %d. Maybe the files was not populated correctly?\n", bytes_read, conf->block_size, res);
+      fprintf(fpi, "Reading block in offset %lu, with size %lu returned %d. Maybe the files was not populated correctly? The next integrity error is related with this message: ", bytes_read, conf->block_size, res);   
     }
 
     res+=compare_blocks(buf, info->content_tracker[idproc][bytes_read/conf->block_size], conf->block_size, fpi, 1);

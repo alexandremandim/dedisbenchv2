@@ -20,7 +20,7 @@ int init_io(struct user_confs *conf, int procid){
   return 0;
 }
 
-uint64_t write_request2(generator_t *g, char* buf, int idproc, struct block_info *infowrite, struct user_confs *conf, struct stats *stat){
+uint64_t write_request2(generator_t *g, unsigned char* buf, int idproc, struct block_info *infowrite, struct user_confs *conf, struct stats *stat){
 
   /*Atenção: Nesta versão ignorei o facto de inserir no buffer um timestamp e o id do processo quando ele é único,
     uma vez que a geração aleatória de ID's deixa de ser feita dentro de um intervalo e passa a ser um nr aleatório qualquer
