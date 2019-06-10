@@ -23,9 +23,8 @@
 
     Tb inicializa o statistics
 */
-void get_distribution_stats(struct user_confs *conf, generator_t *g, struct duplicates_info *info, char* fname, int distout){
+void get_distribution_stats(struct user_confs *conf, generator_t *g, duplicates_info *info, char* fname, int distout){
 
-	g = get_generator2(conf->block_size, conf->input_total_blocks, conf->percentage_analyze , conf->compression_to_achieve, fname);
 	int i = initialize(g, info);
 	if(i != 1){printf("Error: initialize generator.\n"); exit(0);}
   else{
@@ -41,7 +40,7 @@ void get_distribution_stats(struct user_confs *conf, generator_t *g, struct dupl
 }
 
 /* Utilizado para a integridade*/
-void get_block_content(char* bufaux, struct block_info infowrite, uint64_t block_size){
+void get_block_content(unsigned char* bufaux, block_info infowrite, uint64_t block_size){
 
   //initialize the buffer with duplicate content
   int bufp = 0;
@@ -50,16 +49,16 @@ void get_block_content(char* bufaux, struct block_info infowrite, uint64_t block
   }
 
   if(infowrite.procid!=-1){
-    sprintf(bufaux,"%llu pid %d time %llu ", (long long unsigned int)infowrite.cont_id,infowrite.procid,(long long unsigned int)infowrite.ts);
+    sprintf((char*)bufaux,"%llu pid %d time %llu ", (long long unsigned int)infowrite.cont_id,infowrite.procid,(long long unsigned int)infowrite.ts);
   }
   else{
-    sprintf(bufaux,"%llu ", (long long unsigned int)infowrite.cont_id);
+    sprintf((char*)bufaux,"%llu ", (long long unsigned int)infowrite.cont_id);
   }
 
 }
 
 /* Utilizado para a integridade */
-int check_block_content(char* buf, uint64_t block_size){
+int check_block_content(unsigned char* buf, uint64_t block_size){
 
   const char s[2] = " ";
   char *token=NULL;
@@ -123,7 +122,7 @@ int check_block_content(char* buf, uint64_t block_size){
 }
 
 /* Utiizado para a integridade */
-int compare_blocks(char* buf, struct block_info infowrite, uint64_t block_size, FILE* fpi, int final_check){
+int compare_blocks(unsigned char* buf, block_info infowrite, uint64_t block_size, FILE* fpi, int final_check){
 
   unsigned char bufaux[block_size];
   int i=0;
@@ -144,7 +143,7 @@ int compare_blocks(char* buf, struct block_info infowrite, uint64_t block_size, 
   return 0;
 }
 
-void get_writecontent2(char* buf, generator_t *g, int idproc, struct block_info *info_write){
+void get_writecontent2(unsigned char* buf, generator_t *g, int idproc, block_info *info_write){
 
   nextBlock(g, buf, info_write);
   
@@ -163,7 +162,7 @@ void get_writecontent2(char* buf, generator_t *g, int idproc, struct block_info 
 }
 
 /* Utilizado para fazer logging do que realmente foi escrito */
-int gen_outputdist(struct duplicates_info *info, DB **dbpor,DB_ENV **envpor){
+int gen_outputdist(duplicates_info *info, DB **dbpor,DB_ENV **envpor){
 
 	FILE* f = fopen("headerdist", "wb");
 	if(!f) {
@@ -177,7 +176,7 @@ int gen_outputdist(struct duplicates_info *info, DB **dbpor,DB_ENV **envpor){
 		if(info->statistics[i]==1){
 			*info->zerodups=*info->zerodups+1;
 
-      int block_id = i + info->zero_copy_blocks; /* ID's start with 0 copies blocks */
+      uint64_t block_id = i + info->zero_copy_blocks; /* ID's start with 0 copies blocks */
 			fprintf(f, "%lu %lu\n", block_id, info->statistics[i]);
 		}
 		if(info->statistics[i]>1){
@@ -203,8 +202,8 @@ int gen_outputdist(struct duplicates_info *info, DB **dbpor,DB_ENV **envpor){
 				  //insert counter in the right entry
 				  put_db_print(&ndups,&hvalue,dbpor,envpor);
 			 }
-      int block_id = i + info->zero_copy_blocks; /* ID's start with 0 copies blocks */
-			fprintf(f, "%lu %lu\n", i, info->statistics[i]);
+      uint64_t block_id = i + info->zero_copy_blocks; /* ID's start with 0 copies blocks */
+			fprintf(f, "%lu %lu\n", block_id, info->statistics[i]);
 		}
 
 	}
