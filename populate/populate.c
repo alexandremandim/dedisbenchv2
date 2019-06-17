@@ -72,9 +72,6 @@ int create_pfile(int procid, struct user_confs *conf){
    return fd_test;
 }
 
-
-
-
 int destroy_pfile(int procid, struct user_confs *conf){
 
   //create the file with unique name for process with id procid
@@ -256,7 +253,7 @@ void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *i
 
 }
 
-
+/* Retorna o nr de blocos c/ erros */
 int file_integrity(int fd, struct user_confs *conf, struct duplicates_info *info, int idproc, FILE* fpi){
 
   unsigned char *buf;
@@ -272,7 +269,6 @@ int file_integrity(int fd, struct user_confs *conf, struct duplicates_info *info
 
   uint64_t bytes_read=0;
   while(bytes_read<conf->filesize){
-
 
     int res = pread(fd,buf,conf->block_size,bytes_read);
 
@@ -291,11 +287,10 @@ int file_integrity(int fd, struct user_confs *conf, struct duplicates_info *info
   free(buf);
 
   return res;
-
-
 }
 
-
+/* Esta função cria um ficheiro c/ resultados do static integrity, abre fd para os ficheiros onde foram feitas escritas e 
+faz o teste de integrity. No fim escreve para esses ficheiros os erros encontrados. */
 void check_integrity(struct user_confs *conf, struct duplicates_info *info){
 
   int i;
@@ -309,15 +304,16 @@ void check_integrity(struct user_confs *conf, struct duplicates_info *info){
   fpi=fopen(ifilename,"w");
   fprintf(fpi,"Final Integrity Check results\n");
 
+  /* Calculo nrpocs */
   if(conf->mixedIO==1){
     nprocs=conf->nprocs/2;
-  }
-  else{
+  }else{
     nprocs=conf->nprocs;
   }
 
   printf("File/device(s) integrity check is now Running...\n");
 
+  /* filesystem */
   if(conf->rawdevice==0){
 
     //for each process populate its file with size filesize
@@ -334,16 +330,18 @@ void check_integrity(struct user_confs *conf, struct duplicates_info *info){
         printf("Running for proc %s...\n", name);
 
         fd = create_pfile(i,conf);
-        integrity_errors += file_integrity(fd,conf, info, i, fpi);
+        integrity_errors += file_integrity(fd, conf, info, i, fpi);
         close(fd);        
     }
-  }  
+  } 
+  /* rawdevice */
   else{
     fd = open_rawdev(conf->rawpath,conf);
     integrity_errors += file_integrity(fd,conf, info, 0, fpi);
     close(fd);
   }
 
+  /* (f)printfs ... c/ resultados */
   if(integrity_errors>0){
     printf("Found %d integrity errors see %s file for more details\n", integrity_errors, ifilename);
     fprintf(fpi,"Found %d integrity errors see %s file for more details\n", integrity_errors, ifilename);
@@ -351,10 +349,7 @@ void check_integrity(struct user_confs *conf, struct duplicates_info *info){
     fprintf(fpi,"No integrity issues found\n");
     printf("No integrity issues found\n");
   }
+  
   fclose(fpi);
-
   printf("File/device(s) integrity check is completed\n");
-
-
-
 }

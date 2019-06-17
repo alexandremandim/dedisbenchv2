@@ -2,3 +2,6 @@
 -> struct user_confs :      partilhada entre processos
     totblocks
     numberops - nr de operações
+
+
+-> Nestes testes vamos só fazer check integrity static;

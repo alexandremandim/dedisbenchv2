@@ -213,9 +213,29 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 		if(iotype==WRITE){
 
 			uint64_t idwrite=0;	 
-			struct block_info info_write;	
+			struct block_info info_write;
 
-			iooffset=write_request2(g, buf, idproc, &info_write, conf, &stat);
+			//iooffset=write_request2(g, buf, idproc, &info_write, conf, &stat);
+
+				struct timeval start, end;
+
+				gettimeofday(&start, NULL);
+
+				int i;
+				printf("Inicio teste...\n");
+				for(i = 0; i < 1000000; i++){
+					//printf("-> %d\n",i);
+					write_request2(g, buf, idproc, &info_write, conf, &stat);
+				}
+
+				gettimeofday(&end, NULL);
+
+				long seconds = (end.tv_sec - start.tv_sec);
+				long micros = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
+
+				printf("Time elpased is %d seconds and %d micros\n", seconds, micros);
+
+				exit(0);
 
 			idwrite=info_write.cont_id;
 			
@@ -512,14 +532,14 @@ void launch_benchmark(generator_t *g, struct user_confs* conf, struct duplicates
 		findex = 0;
 	}
 
-  init_rand(conf->seed);
-  if(conf->mixedIO==1){
-    conf->nr_proc_w=conf->nprocs/2;
-    nprocinit=conf->nprocs/2;
-  }else{
-    conf->nr_proc_w=conf->nprocs;
-    nprocinit=conf->nprocs;
-  }
+	init_rand(conf->seed);
+	if(conf->mixedIO==1){
+		conf->nr_proc_w=conf->nprocs/2;
+		nprocinit=conf->nprocs/2;
+	}else{
+		conf->nr_proc_w=conf->nprocs;
+		nprocinit=conf->nprocs;
+	}
 
 	for (i = 0; i < conf->nprocs; ++i) {
 	  if ((pids[i] = fork()) < 0) {
@@ -1051,6 +1071,8 @@ int main(int argc, char *argv[]){
 
 	remove_db(DISTDB,conf.dbpdist,conf.envpdist);
 
+	//teste(g, &conf);
+	 
 	launch_benchmark(g, &conf, &info);
 
 	if(conf.distout==1){

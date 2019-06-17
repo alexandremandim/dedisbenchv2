@@ -1,1 +1,0 @@
-O ficheiro de input precisa de ter uma linha em branco no final.

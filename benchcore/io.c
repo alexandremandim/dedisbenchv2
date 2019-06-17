@@ -29,7 +29,7 @@ uint64_t write_request2(generator_t *g, unsigned char* buf, int idproc, struct b
  
   get_writecontent2(buf, g, idproc, infowrite);
 
-  return get_ioposition(conf, stat, idproc);
+  return 0;
 }
 
 uint64_t read_request(struct user_confs *conf, struct stats *stat, int idproc){

@@ -40,6 +40,7 @@ void get_distribution_stats(struct user_confs *conf, generator_t *g, duplicates_
 }
 
 /* Utilizado para a integridade*/
+/* Esta função é utilizada para popular o bufaux, ou seja, o bloco q vamos testar devia ser igual a este */
 void get_block_content(unsigned char* bufaux, block_info infowrite, uint64_t block_size){
 
   //initialize the buffer with duplicate content
@@ -58,6 +59,7 @@ void get_block_content(unsigned char* bufaux, block_info infowrite, uint64_t blo
 }
 
 /* Utilizado para a integridade */
+/* Esta função é chamada quando os 2 blocos são diferentes */
 int check_block_content(unsigned char* buf, uint64_t block_size){
 
   const char s[2] = " ";
@@ -69,17 +71,21 @@ int check_block_content(unsigned char* buf, uint64_t block_size){
   int pids=-1;
 
   char original_buf[block_size];
-  memcpy(original_buf,buf, block_size);
+  memcpy(original_buf, buf, block_size); /* Copia block_size caracteres de buf p/ original_buf */
 
   //initialize the buffer with duplicate content
   int bufp = 0;
   char bufaux[block_size];
+  /* Inicializa o bufaux com 'a's */
   for(bufp=0;bufp<block_size;bufp++){
     bufaux[bufp] = 'a';
   }
    
   token = strtok(original_buf, s);
   /* walk through other tokens */
+  /* Este ciclo vai pelo original_buf, que contem a info do bloco lido e está errado e retira o ID conteudo (contwrites), 
+      id processo(pids) e timestamp (times) 
+      contwrites_b, times_b são flags 0: nao encontrou, 1: encontrou*/
   while( token != NULL ) 
   {
 
@@ -102,9 +108,9 @@ int check_block_content(unsigned char* buf, uint64_t block_size){
           token = strtok(NULL, s);
         }
       }
-      
   }
 
+  /* Encontrou os 3, vamos inserir no bufferaux */
   if(contwrites_b >= 0 && pids>=0 && times_b >=0){
     sprintf(bufaux,"%llu pid %d time %llu ", (long long unsigned int)contwrites,pids,(long long unsigned int)times);
   }
@@ -117,17 +123,20 @@ int check_block_content(unsigned char* buf, uint64_t block_size){
     }
   }
     
-  return memcmp(buf,bufaux, block_size);
-   
+  return memcmp(buf,bufaux, block_size); 
 }
 
 /* Utiizado para a integridade */
+/* Return: 1 se os bloco conter erros, 0 se ñ tem*/
 int compare_blocks(unsigned char* buf, block_info infowrite, uint64_t block_size, FILE* fpi, int final_check){
 
   unsigned char bufaux[block_size];
   int i=0;
-  get_block_content(bufaux, infowrite, block_size);
+  get_block_content(bufaux, infowrite, block_size); /* Inicializa o buffer auxiliar c/ o resultado esperado */
 
+
+ /* Se o memcmp retorna-se 0 significava q os 2 blocos eram iguais */
+ /* Os blocos são diferentes */
   if(memcmp(buf,bufaux,block_size)!=0){
     i=check_block_content(buf, block_size);
     if(i==0 && final_check==0){
