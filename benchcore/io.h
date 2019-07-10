@@ -15,6 +15,6 @@
 
 int init_io(struct user_confs *conf, int procid);
 uint64_t read_request(struct user_confs *conf, struct stats *stat, int idproc);
-uint64_t write_request2(generator_t *g, unsigned char* buf, int idproc, struct block_info *infowrite, struct user_confs *conf, struct stats *stat);
+uint64_t write_request(generator_t *g, unsigned char** buf, int idproc, struct block_info *infowrite, struct user_confs *conf, struct stats *stat);
 
 #endif
