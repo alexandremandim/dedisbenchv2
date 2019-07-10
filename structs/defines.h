@@ -33,7 +33,6 @@
 
 #define DISTDB	"benchdbs/distdb/"
 
-
 struct stats{
 
 	//statistics variables
@@ -73,16 +72,11 @@ struct stats{
 	// also counts 1 copy of each duplicated block
 	//blocks with duplicates written
 	uint64_t dupl;
-
-	//zerodups only refers to blocks with only one copy (no duplicates)
-	//local mem
-	uint64_t zerod;
-
 };
+
 
 struct user_confs{
 
-	uint64_t input_total_blocks;
 	uint64_t compression_to_achieve;
 	uint64_t percentage_analyze;
 
