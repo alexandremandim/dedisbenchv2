@@ -31,52 +31,6 @@
 
 #define DISTDB "benchdbs/distdb/"
 
-struct stats{
-
-	//statistics variables
-	//throughput per second
-	double throughput;
-	//average latency
-	double latency;
-
-	//TODO this sould be an option of the menu...
-	//TODO here we must have a variable that only initiates snapshots if the user specified
-  	//array of periodic Snapshots of average throughput and latency.
-	double *snap_throughput;
-	double *snap_latency;
-	double *snap_ops;
-	uint64_t *snap_time;
-	uint64_t snap_totops;
-	int iter_snap;
-  	uint64_t last_snap_time;
-  	uint64_t t1snap;
-  	double snap_lat;
-
-	//total operations performed
-	uint64_t tot_ops;
-	//Since the begin and end time of the tests are not exact about when the
-	//firts or last operations started or ended we register this more accuratelly
-	//for calculating the throughput
-	//exact time before the first I/O operation
-	uint64_t beginio;
-	//exact time after the last I/O operations
-	uint64_t endio;
-
-	uint64_t misses_read;
-
-	//blocks without any duplicate
-	uint64_t uni;
-	//uni referes to unique blocks meaning that
-	// also counts 1 copy of each duplicated block
-	//blocks with duplicates written
-	uint64_t dupl;
-
-	//zerodups only refers to blocks with only one copy (no duplicates)
-	//local mem
-	uint64_t zerod;
-
-};
-
 struct user_confs{
 
 	//Block size in bytes default 4096
