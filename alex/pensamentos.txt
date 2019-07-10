@@ -27,3 +27,9 @@ skype: jtpaulo
 
 ssh gsd@cloud85
 pass: 123456
+
+
+
+---- DUVIDAS:
+
+odirectf: Com a otimização de devolver um endereço com o buffer e não aceitar e preencher um buffer, isto deixa de fazer sentido?

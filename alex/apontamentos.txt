@@ -1,3 +1,5 @@
+./configure CFLAGS="-ggdb3 -O0" CXXFLAGS="-ggdb3 -O0" LDFLAGS="-ggdb3"
+
 -> struct duplicates_info : partilhada entre todos os processos
 -> struct user_confs :      partilhada entre processos
     totblocks
@@ -5,3 +7,27 @@
 
 
 -> Nestes testes vamos só fazer check integrity static;
+
+
+// Integridade
+
+A estrutura duplicates_info (duplicates.h) tem uma matriz de struct block_info **content_tracker, em que a linha é o id do processo ou 0 (rawdevice) e a linha é o iooffset
+
+--------------------- main.c
+PROCESS_RUN():  No caso de escritas, e caso haja qlq teste de integridade, p/ cada escrita guarda os dados do bloco na matriz.
+                No caso de leituras, caso o teste seja online, p/ cada leitura verifica a integridade. COMPARE_BLOCKS()
+                No final da função, caso teseja seja online realiza um printf...
+LAUNCH_BENCHMARK(): No final da função, caso o teste seja static, faz a verifição estática método CHECK_INTEGRITY()
+MAIN():         Faz alocação de memória p/ estruturas utilizadas
+
+--------------------- duplicatedist.c
+COMPARE_BLOCKS():   No caso do bloco tiver erro retorna 0 e tenta corrigi-lo. Caso contrário retorna 0.
+
+get_block_content():   Cria um buffer auxiliar c/ base nos IDs de um block_info
+check_block_content(): Chamada qdo a COMPARE_BLOCKS() identifica que o bloco tem erros e Tenta corrigir o bloco.
+ 
+ --------------------- populate.c
+ CHECK_INTEGRITY(): Função chamada p/ fazer teste static no final do benchmark.
+                    Chama o file_integrity() p/ todos os blocos. No final escreve p/ ficheiro os resultados.
+
+ file_integrity(): Percorre todos os blocos e chamda o COMPARE_BLOCKS()
