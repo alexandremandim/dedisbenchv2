@@ -1,0 +1,14 @@
+DEDISbenchV2:
+
+Tempo de resposta (1000000 operações): 0.243406 segundos.
+Débito: 4108362 operações/segundo.
+Media por operação: 0.8112340000 us.
+Desvio padrão por operação: 0.4642514375 us.
+
+
+DEDISbench:
+
+Tempo de resposta (1000000 operações): 1.704062 segundos.
+Débito: 586833 operações/segundo.
+Media por operação: 2.2356980000 us.
+Desvio padrão por operação: 0.9434863289 us.
