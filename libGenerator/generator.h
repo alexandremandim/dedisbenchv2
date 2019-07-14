@@ -6,6 +6,7 @@
 #include <string>
 #include <random>
 #include "../benchcore/duplicates/duplicatedist.h"
+#include "../structs/defines.h"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ class Generator {
     public:
         Generator(unsigned int blockSize, unsigned int blocosToGenerate, unsigned int percentage_unique_blocks_analyze, unsigned int compression_percentage_between_blocks, string readPath);
         void nextBlock(unsigned char** buffer, block_info *info_write);
-        int initialize(duplicates_info *info);
+        int initialize(duplicates_info *info, struct user_confs *conf);
         int generate_data(unsigned char** buffer, unsigned int block_id, unsigned int compression);
         int get_block_compression_by_id(int block_id);        
         void free_block_models();
@@ -43,8 +44,8 @@ class Generator {
         unsigned int getRandomBlockFromLine(Linha l);
         Linha getLinha();
         unsigned int giveMyCompression(Linha linhaAleatoria, unsigned int randomBlockID);
-        unsigned char* blockModel(unsigned int blockSize, unsigned int compression, double seed);
-        int loadModels();
+        unsigned char* blockModel(unsigned int blockSize, unsigned int compression, double seed, struct user_confs *conf);
+        int loadModels(struct user_confs *conf);
         tuple<double, double> get_media_inter(int percentage_interval);
         unsigned char* get_model_by_id_and_compression(unsigned int block_id, unsigned int compression);
       

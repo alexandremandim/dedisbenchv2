@@ -17,10 +17,12 @@
     Inicializa a biblioteca libGenerator 'g'; Preenche alguns campos de 'info'
     Inicializa o statistics a 0's
 */
-void init(generator_t *g, duplicates_info *info, int distout)
+void init(generator_t *g, duplicates_info *info, struct user_confs *conf)
 {
 
-	int i = initialize(g, info);
+
+
+	int i = initialize(g, info, conf);
 	if (i != 1)
 	{	
 		printf("Error: initialize generator.\n");
@@ -34,7 +36,7 @@ void init(generator_t *g, duplicates_info *info, int distout)
 	/* Initialize info->statistics to zero */
 	int z;
 	for (z = 1; z < info->duplicated_blocks; z++)
-		if (distout == 1)
+		if (conf->distout == 1)
 			info->statistics[z] = 0;
 }
 

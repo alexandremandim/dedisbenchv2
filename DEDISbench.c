@@ -77,7 +77,6 @@ FILE *create_plog(int procid)
 //run a a peak test
 void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype, struct user_confs *conf, struct duplicates_info *info)
 {
-
 	int fd_test;
 	int procid_r = idproc;
 	FILE *fpi = NULL;
@@ -214,11 +213,11 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 			//memory block
 			if (conf->odirectf == 1)
 			{
-				buf = memalign(conf->block_size, conf->block_size);
+				//buf = memalign(conf->block_size, conf->block_size);
 			}
 			else
 			{
-				buf = malloc(conf->block_size);
+				//buf = malloc(conf->block_size);
 			}
 
 			//If it is a write test then get the content to write and
@@ -372,9 +371,6 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 					fprintf(fres, "%llu %llu\n", (long long unsigned int)t2 - t1, (long long unsigned int)t2s);
 				}
 			}
-
-			free(buf);
-
 			//One more operation was performed
 			if (begin >= ru_begin)
 			{
@@ -402,6 +398,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 			{
 				begin++;
 			}
+			//free(buf);
 		}
 		else
 		{
@@ -938,7 +935,6 @@ static int config_handler(void *config, const char *section, const char *name, c
 
 int main(int argc, char *argv[])
 {
-
 	uint64_t **mem = malloc(sizeof(uint64_t *));
 	uint64_t sharedmem_size;
 	int fd_shared;
@@ -1181,7 +1177,7 @@ int main(int argc, char *argv[])
 	{
 		g = get_generator(conf.block_size, conf.number_ops, conf.percentage_analyze, conf.compression_to_achieve, conf.distfile);
 		printf("Loading duplicates distribution %s...\n", conf.distfile);
-		init(g, &info, conf.distout);
+		init(g, &info, &conf);
 
 		if (conf.distout == 1 || conf.integrity >= 1)
 		{
@@ -1197,7 +1193,7 @@ int main(int argc, char *argv[])
 		//get global information about duplicate and unique blocks
 		g = get_generator(conf.block_size, conf.number_ops, conf.percentage_analyze, conf.compression_to_achieve, DFILE);
 		printf("Loading duplicates distribution %s...\n", DFILE);
-		init(g, &info, conf.distout);
+		init(g, &info, &conf);
 
 		if (conf.distout == 1 || conf.integrity >= 1)
 		{

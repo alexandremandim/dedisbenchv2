@@ -56,7 +56,7 @@ typedef struct duplicates_info
 
 } duplicates_info;
 
-void init(generator_t *g, duplicates_info *info, int distout);
+void init(generator_t *g, duplicates_info *info, struct user_confs *conf);
 int gen_outputdist(duplicates_info *info, DB **dbpor, DB_ENV **envpor);
 void get_writecontent(unsigned char **buf, generator_t *g, uint64_t idproc, block_info *info_write);
 

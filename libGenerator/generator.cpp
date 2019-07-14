@@ -8,6 +8,7 @@
 #include "generator.h"
 #include <stdio.h>
 #include <string.h>
+#include <malloc.h>
 
 unsigned int Generator::getRandomBlockFromLine(Linha l)
 {
@@ -109,7 +110,7 @@ void Generator::free_block_models()
  * Compression must be between 1 and 99. 
  * The blockSize must be multiple of 4096
  */
-unsigned char *Generator::blockModel(unsigned int blockSize, unsigned int compression, double seed)
+unsigned char *Generator::blockModel(unsigned int blockSize, unsigned int compression, double seed, struct user_confs *conf)
 {
 
 	if (compression < 1 || compression > 99)
@@ -117,7 +118,18 @@ unsigned char *Generator::blockModel(unsigned int blockSize, unsigned int compre
 	int size = blockSize / 4096;
 	size = size * 4096; /* blockSize must be multiple of 4096 */
 	int nrBlocos4096 = blockSize / 4096;
-	unsigned char *buffer = (unsigned char *)malloc(sizeof(unsigned char) * (size)); /* Generate block with 0% compression */
+
+	//memory block
+	unsigned char *buffer;
+	int block_size = sizeof(unsigned char) * (size);
+	if (conf->odirectf == 1)
+	{
+		buffer = (unsigned char *)memalign(block_size, block_size);
+	}
+	else
+	{
+		buffer = (unsigned char *)malloc(block_size);
+	}
 
 	/* Preencher o buffer com data random com 0% de compressão */
 	for (int i = 0; i < nrBlocos4096; i++)
@@ -165,7 +177,7 @@ unsigned char *Generator::blockModel(unsigned int blockSize, unsigned int compre
  * nr_model_vectors: nr of vectors loaded
  * return: 1 -> ok, -1 -> error 
  */
-int Generator::loadModels()
+int Generator::loadModels(struct user_confs *conf)
 {
 	/* Gerar todos os vetores de modelos para memória */
 	for (unsigned int vectores_created = 0; vectores_created < nr_models; vectores_created++)
@@ -182,7 +194,7 @@ int Generator::loadModels()
 		/* Gerar vetor de 10 modelos */
 		for (int compression = 5; compression <= 95; compression = compression + 10)
 		{
-			unsigned char *buffer = blockModel(globalArgs.blockSize, compression, seed);
+			unsigned char *buffer = blockModel(globalArgs.blockSize, compression, seed, conf);
 
 			if (buffer != NULL)
 				new_vector.push_back(buffer); /* Adicionar modelo ao vector */
@@ -318,7 +330,7 @@ void Generator::nextBlock(unsigned char **buffer, block_info *info_write)
  * struct info is needed to fill some variables
  * Return 1:ok -1:error
 */
-int Generator::initialize(duplicates_info *info)
+int Generator::initialize(duplicates_info *info, struct user_confs *conf)
 {
 	random_device rd;
 	generator = std::mt19937(rd());
@@ -393,7 +405,7 @@ int Generator::initialize(duplicates_info *info)
 	compressions_inter_blocks_interval = get_media_inter(globalArgs.percentage_unique_blocks_analyze);
 
 	/* Generating Block Models */
-	int returnLoadModels = loadModels();
+	int returnLoadModels = loadModels(conf);
 
 	/* Fill struct duplicates_info */
 	info->zero_copy_blocks = globalArgs.zeroCopiesBlocks;

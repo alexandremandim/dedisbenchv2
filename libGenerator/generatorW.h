@@ -4,6 +4,7 @@
 #define __GENERATORW_H__
 
 #include "../benchcore/duplicates/duplicatedist.h"
+#include "../structs/defines.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,7 +13,7 @@ extern "C" {
 generator_t *get_generator(unsigned int blockSize, unsigned int blocosToGenerate, unsigned int percentage_unique_blocks_analyze, 
     unsigned int compression_percentage_between_blocks, char* readPath);
 void generator_destroy(generator_t *g);
-int initialize(generator_t *g, struct duplicates_info *info);
+int initialize(generator_t *g, struct duplicates_info *info, struct user_confs *conf);
 void nextBlock(generator_t *g, unsigned char** buffer, struct block_info *info_write);
 int generate_data(generator_t *g, unsigned char** buffer, unsigned int block_id, unsigned int compression);
 int get_block_compression_by_id(generator_t *g, int block_id);
