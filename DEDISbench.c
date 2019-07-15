@@ -194,6 +194,19 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 	//overall throughput will not be affected.
 	double time_elapsed = 1;
 
+	unsigned char *buf;
+	if (iotype != WRITE)
+	{
+		if (conf->odirectf == 1)
+		{
+			buf = memalign(conf->block_size, conf->block_size);
+		}
+		else
+		{
+			buf = malloc(conf->block_size);
+		}
+	}
+
 	//while bench time has not ended or amount of data is not written
 	while (begin < end)
 	{
@@ -210,19 +223,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 		//IF the the test is peak or if it is NOMINAL and we are below the expected rate
 		if (conf->testtype == PEAK || ops_proc / time_elapsed < ratio)
 		{
-
-			unsigned char *buf;
 			uint64_t iooffset = 0;
-			//memory block
-			if (conf->odirectf == 1)
-			{
-				//buf = memalign(conf->block_size, conf->block_size);
-			}
-			else
-			{
-				//buf = malloc(conf->block_size);
-			}
-
 			//If it is a write test then get the content to write and
 			//populate buffer with the content to be written
 			if (iotype == WRITE)
@@ -257,7 +258,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 						}
 					}
 					else
-					{/* Block with o copies */
+					{										   /* Block with o copies */
 						stat.uni++;							   /* uni refers to unique blocks (including 1 copy of each duplicated) */
 						*info->zerodups = *info->zerodups + 1; /* zerdupz refers to blocks with 0 copies */
 					}
@@ -320,7 +321,6 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 			//If it is a read benchmark
 			else
 			{
-
 				iooffset = read_request(conf, &stat, idproc);
 
 				acessesarray[iooffset / conf->block_size]++;
@@ -401,7 +401,6 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 			{
 				begin++;
 			}
-			//free(buf);
 		}
 		else
 		{
@@ -432,6 +431,10 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 		}
 	} // Fim do ciclo
 
+	if (iotype != WRITE)
+	{
+		free(buf);
+	}
 	if (conf->logfeature == 1)
 	{
 		fclose(fres);
@@ -1166,8 +1169,6 @@ int main(int argc, char *argv[])
 
 	remove_db(DISTDB, conf.dbpdist, conf.envpdist);
 
-
-	
 	//launch_test_speed(g, &conf, 1000000);
 
 	launch_benchmark(g, &conf, &info);
