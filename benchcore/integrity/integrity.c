@@ -23,9 +23,10 @@ void get_block_content(generator_t *g, unsigned char **bufaux, block_info info_w
             exit(0);
         }
 
+        memcpy(&(*bufaux)[0], &info_write.cont_id, sizeof(unsigned int));
         /* Como o content_id mudou porque é aleatório no caso de blocos com 0 copias, vamos voltar a escrever o antigo */
-        for (size_t i = 0; i < sizeof(info_write.cont_id); ++i)
-            bufaux[i] = *((unsigned char *)&info_write.cont_id + i);
+        // for (size_t i = 0; i < sizeof(info_write.cont_id); ++i)
+        //     *bufaux[i] = *((unsigned char *)&info_write.cont_id + i);
     }
     else{
         int res_gen = generate_data(g, bufaux, info_write.block_id, info_write.compression_index);
@@ -38,9 +39,9 @@ void get_block_content(generator_t *g, unsigned char **bufaux, block_info info_w
 
 /* Esta função é chamada quando os 2 blocos são diferentes. buf é o buffer original que tem erros */
 /* Esta função tenta "reparar" o buffer. Tenta identificar os ID's (3 ou 1) que caracterizam um bloco e construir um novo buffer a partir dessa informação */
-int check_block_content(generator_t *g, unsigned char **buf, uint64_t block_size, block_info infowrite, duplicates_info *info)
+int check_block_content(generator_t *g, unsigned char *buf, uint64_t block_size, block_info infowrite, duplicates_info *info)
 {
-    unsigned char new_buffer[block_size];
+    unsigned char *new_buffer;
     unsigned int cont_id = 0, block_id;
 
     memcpy(&cont_id, &buf[0], sizeof(unsigned int));
@@ -68,17 +69,17 @@ int check_block_content(generator_t *g, unsigned char **buf, uint64_t block_size
     }
     else new_info.compression_index = new_info.compression_index / 10;
 
-    get_block_content(g, new_buffer, new_info, block_size);
+    get_block_content(g, &new_buffer, new_info, block_size);
     return memcmp(buf, new_buffer, block_size);  
 }
 
 /* Return: 1 se os bloco conter erros, 0 se ñ tem*/
 /* Caso os blocos forem diferentes, tenta corrigir o bloco errado.*/
-int online_check(generator_t *g, unsigned char **buf, block_info infowrite, uint64_t block_size, FILE *fpi, int final_check, duplicates_info *info)
+int online_check(generator_t *g, unsigned char *buf, block_info infowrite, uint64_t block_size, FILE *fpi, int final_check, duplicates_info *info)
 {
-    unsigned char bufaux[block_size];
+    unsigned char *bufaux;
     int i = 0;
-    get_block_content(g, bufaux, infowrite, block_size); /* Inicializa o buffer auxiliar c/ o resultado esperado */
+    get_block_content(g, &bufaux, infowrite, block_size); /* Inicializa o buffer auxiliar c/ o resultado esperado */
 
     /* Se o memcmp retornar 0 significa q os 2 blocos são iguais */
     /* Os blocos são diferentes */
@@ -112,11 +113,11 @@ int file_integrity(generator_t *g, int fd, struct user_confs *conf, struct dupli
     //memory block
     if (conf->odirectf == 1)
     {
-        *buf = memalign(conf->block_size, conf->block_size);
+        buf = memalign(conf->block_size, conf->block_size);
     }
     else
     {
-        *buf = malloc(conf->block_size);
+        buf = malloc(conf->block_size);
     }
 
     //insert_bug(fd,100,100);
