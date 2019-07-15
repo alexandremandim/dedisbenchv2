@@ -17,6 +17,7 @@ int initialize(generator_t *g, struct duplicates_info *info, struct user_confs *
 void nextBlock(generator_t *g, unsigned char** buffer, struct block_info *info_write);
 int generate_data(generator_t *g, unsigned char** buffer, unsigned int block_id, unsigned int compression);
 int get_block_compression_by_id(generator_t *g, int block_id);
+void initialize_random(generator_t *g);
 
 #ifdef __cplusplus
 }

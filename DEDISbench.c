@@ -79,6 +79,7 @@ FILE *create_plog(int procid)
 //run a a peak test
 void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype, struct user_confs *conf, struct duplicates_info *info)
 {
+	initialize_random(g);
 	int fd_test;
 	int procid_r = idproc;
 	FILE *fpi = NULL;

@@ -19,9 +19,6 @@
 */
 void init(generator_t *g, duplicates_info *info, struct user_confs *conf)
 {
-
-
-
 	int i = initialize(g, info, conf);
 	if (i != 1)
 	{	

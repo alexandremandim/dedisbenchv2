@@ -21,6 +21,7 @@ class Generator {
         Generator(unsigned int blockSize, unsigned int blocosToGenerate, unsigned int percentage_unique_blocks_analyze, unsigned int compression_percentage_between_blocks, string readPath);
         void nextBlock(unsigned char** buffer, block_info *info_write);
         int initialize(duplicates_info *info, struct user_confs *conf);
+        void initialize_random();
         int generate_data(unsigned char** buffer, unsigned int block_id, unsigned int compression);
         int get_block_compression_by_id(int block_id);        
         void free_block_models();

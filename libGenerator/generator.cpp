@@ -321,6 +321,11 @@ void Generator::nextBlock(unsigned char **buffer, block_info *info_write)
 	linhaAleatoria.nrCopies == 0 ? info_write->flag_unique_block = 1 : info_write->flag_unique_block = 0; /* Flag block has 0 copies */
 }
 
+void Generator::initialize_random(){
+	random_device rd;
+	generator = std::mt19937(rd());
+}
+
 /* Read input file for duplicate and compression distribution.
     Generate Models to generate data
  * path: path to input file
@@ -332,8 +337,7 @@ void Generator::nextBlock(unsigned char **buffer, block_info *info_write)
 */
 int Generator::initialize(duplicates_info *info, struct user_confs *conf)
 {
-	random_device rd;
-	generator = std::mt19937(rd());
+	initialize_random();
 
 	if (globalArgs.blockSize < 4096)
 		return -1;

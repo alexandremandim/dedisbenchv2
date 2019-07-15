@@ -52,3 +52,10 @@ int get_block_compression_by_id(generator_t *g, int block_id){
     Generator *gen = static_cast<Generator *>(g->obj);
     return gen->get_block_compression_by_id(block_id);
 }
+
+void initialize_random(generator_t *g){
+   if(g == NULL || g->obj == NULL) return;
+    
+    Generator *gen = static_cast<Generator *>(g->obj);
+    gen->initialize_random(); 
+}
