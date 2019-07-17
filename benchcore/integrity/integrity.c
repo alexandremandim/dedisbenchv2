@@ -123,6 +123,7 @@ int file_integrity(generator_t *g, int fd, struct user_confs *conf, struct dupli
     //insert_bug(fd,100,100);
 
     uint64_t bytes_read = 0;
+    /* TODO: conf->filesize, gera problemas quando não fazemos populate e escrevemos menos que o filesize. Substituir pelo verdadeiro tamanho do ficheiro? */
     while (bytes_read < conf->filesize)
     {
         /* Lê o próximo bloco */
@@ -133,9 +134,11 @@ int file_integrity(generator_t *g, int fd, struct user_confs *conf, struct dupli
         {
             printf("Reading block in offset %lu, with size %lu returned %d. Maybe the files was not populated correctly?\n", bytes_read, conf->block_size, res_pread);
             fprintf(fpi, "Reading block in offset %lu, with size %lu returned %d. Maybe the files was not populated correctly? The next integrity error is related with this message: ", bytes_read, conf->block_size, res_pread);
+            res++;
         }
-
-        res += online_check(g, buf, info->content_tracker[idproc][bytes_read / conf->block_size], conf->block_size, fpi, 1, info);
+        else{        
+            res += online_check(g, buf, info->content_tracker[idproc][bytes_read / conf->block_size], conf->block_size, fpi, 1, info);
+        }
 
         bytes_read += conf->block_size;
     }

@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include "../utils/random/random.h"
 #include "populate.h"
+#include "../benchcore/io.h"
 
 int open_rawdev(char *rawpath, struct user_confs *conf)
 {
@@ -126,7 +127,6 @@ uint64_t dd_populate(char *name, struct user_confs *conf)
 
 uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct duplicates_info *info, int idproc)
 {
-
 	struct stats stat;
 
 	//init random generator
@@ -135,6 +135,7 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
 	//here is seed+nrprocesses so that in the population the load is different
 	//generate the same load
 	init_rand(conf->seed + conf->nprocs);
+	initialize_random(g);
 
 	uint64_t bytes_written = 0;
 	while (bytes_written < conf->filesize)
@@ -143,17 +144,7 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
 		unsigned char *buf;
 		struct block_info info_write;
 
-		//memory block
-		if (conf->odirectf == 1)
-		{
-			buf = memalign(conf->block_size, conf->block_size);
-		}
-		else
-		{
-			buf = malloc(conf->block_size);
-		}
-
-		get_writecontent(buf, g, idproc, &info_write);
+		write_request(g, &buf, idproc, &info_write, conf, &stat);
 
 		if (conf->distout == 1)
 		{
@@ -186,9 +177,6 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
 			info->content_tracker[pos][bytes_written / conf->block_size].compression_index = info_write.compression_index;
 			info->content_tracker[pos][bytes_written / conf->block_size].flag_unique_block = info_write.flag_unique_block;
 		}
-
-		free(buf);
-
 		bytes_written += conf->block_size;
 	}
 	return bytes_written;
@@ -234,14 +222,11 @@ void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *i
 
 			if (conf->populate == DDPOP)
 			{
-
 				bytes_populated += dd_populate(name, conf);
 			}
 			else
 			{
-
 				printf("populating file %s with realistic content\n", name);
-
 				fd = create_pfile(i, conf);
 				bytes_populated += real_populate(g, fd, conf, info, i);
 				fsync(fd);
@@ -254,7 +239,6 @@ void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *i
 
 		if (conf->populate == DDPOP)
 		{
-
 			bytes_populated += dd_populate(conf->rawpath, conf);
 		}
 		else
