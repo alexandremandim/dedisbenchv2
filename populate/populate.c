@@ -135,7 +135,6 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
 	//here is seed+nrprocesses so that in the population the load is different
 	//generate the same load
 	init_rand(conf->seed + conf->nprocs);
-	initialize_random(g);
 
 	uint64_t bytes_written = 0;
 	while (bytes_written < conf->filesize)
