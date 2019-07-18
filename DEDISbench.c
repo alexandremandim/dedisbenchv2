@@ -480,7 +480,16 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 	}
 	else
 	{
-		printf("Process %d: Total I/O operations %llu Throughput: %.3f blocks/second Latency: %.3f miliseconds misses read %llu\n", procid_r, (long long unsigned int)stat.tot_ops, stat.throughput, stat.latency, (long long unsigned int)stat.misses_read);
+		printf("\n-----Results process %d -----\n", procid_r);
+		if(iotype==WRITE)
+			printf("Total I/O operations %llu (%.2f MB written) \n", (long long unsigned int)stat.tot_ops, (long long unsigned int)stat.tot_ops*conf->block_size/1e6);
+		else			
+			printf("Total I/O operations %llu (%.2f MB read) \n", (long long unsigned int)stat.tot_ops, (long long unsigned int)stat.tot_ops*conf->block_size/1e6);
+		
+		printf("Throughput: %.3f blocks/second (%.2f MB/second)\n", stat.throughput, stat.throughput*conf->block_size/1e6);
+		printf("Latency: %.3f miliseconds\n", stat.latency);
+		if(iotype==READ)
+			printf("Misses read: %llu\n", (long long unsigned int)stat.misses_read);
 
 		if (conf->printtofile == 1)
 		{
@@ -496,7 +505,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 	{
 		int r = write_latency_throughput_snaps(&stat, conf, id);
 		if (r == 1)
-			printf("Couldnt create latency and throughput files.");
+			printf("Couldnt create latency and throughput files.\n");
 	}
 
 	if (conf->accesslog == 1)
@@ -504,7 +513,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 		int r = write_access_data(acessesarray, conf, id);
 		if (r == 1)
 		{
-			printf("Couldnt create access files.");
+			printf("Couldnt create access files.\n");
 		}
 	}
 
@@ -512,14 +521,16 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 	{
 		if (integrity_errors > 0)
 		{
-			printf("Found %d integrity errors see %s file for more details\n", integrity_errors, ifilename);
+			printf("Online check: %d integrity errors see %s file for more details.\n", integrity_errors, ifilename);
 		}
 		else
 		{
+			printf("Online check: no integrity errors\n");
 			fprintf(fpi, "No integrity issues found\n");
 		}
 		fclose(fpi);
 	}
+	printf("------------------------\n", procid_r);
 
 	//init acesses array
 	free(acessesarray);
@@ -558,6 +569,7 @@ void launch_benchmark(generator_t *g, struct user_confs *conf, struct duplicates
 		nprocinit = conf->nprocs;
 	}
 
+	printf("\n-----Starting benchmark (%d processes)-----\n", conf->nprocs);
 	for (i = 0; i < conf->nprocs; ++i)
 	{
 		if ((pids[i] = fork()) < 0)
@@ -567,7 +579,7 @@ void launch_benchmark(generator_t *g, struct user_confs *conf, struct duplicates
 		}
 		else if (pids[i] == 0)
 		{
-			printf("starting benchmark process %d\n", i);
+			//printf("Starting benchmark process %d\n", i);
 
 			if (conf->mixedIO == 1)
 			{
@@ -591,7 +603,6 @@ void launch_benchmark(generator_t *g, struct user_confs *conf, struct duplicates
 				//work performed by each process
 				process_run(g, i, conf->nprocs, conf->ratio, conf->iotype, conf, info);
 			}
-			//sleep(10);
 			exit(0);
 		}
 	}
@@ -603,7 +614,7 @@ void launch_benchmark(generator_t *g, struct user_confs *conf, struct duplicates
 	while (nprocstowait > 0)
 	{
 		pid = wait(&status);
-		printf("Terminating process with PID %ld exited with status 0x%x.\n", (long)pid, status);
+		//printf("PID %ld exited with status 0x%x.\n", (long)pid, status);
 		--nprocstowait;
 	}
 	free(pids);
@@ -622,7 +633,7 @@ void launch_benchmark(generator_t *g, struct user_confs *conf, struct duplicates
 		}
 	}
 
-	printf("Exiting benchmark\n");
+	printf("\nExiting benchmark\n");
 }
 
 void help(void)
@@ -747,7 +758,7 @@ static int config_handler(void *config, const char *section, const char *name, c
 	{
 		conf->distf = 1;
 		strcpy(conf->distfile, value);
-		printf("Using '%s' distribution file\n", conf->distfile);
+		printf("\nDistribution file: '%s'\n", conf->distfile);
 	}
 	else if (MATCH("results", "dist_results"))
 	{
@@ -1112,7 +1123,7 @@ int main(int argc, char *argv[])
 	//convert to bytes
 	conf.filesize = conf.filesize * 1024 * 1024;
 
-	//total blocks to be addressed at file
+	//Calculating number of total blocks
 	conf.totblocks = conf.filesize / conf.block_size;
 
 	//convert time_to_run to seconds
@@ -1132,11 +1143,13 @@ int main(int argc, char *argv[])
 	
 	if (conf.termination_type == SIZE)
 	{
-
 		conf.number_ops = (conf.number_ops * 1024 * 1024) / conf.block_size;
 
 		/* Inicialização do Generator */
-		g = get_generator(conf.block_size, conf.totblocks, conf.percentage_analyze, conf.compression_to_achieve, conf.distfile);
+		int nrfiles;
+		if(conf.mixedIO==1) nrfiles=conf.nprocs/2;
+		else	nrfiles=conf.nprocs;
+		g = get_generator(conf.block_size, conf.totblocks * nrfiles , conf.percentage_analyze, conf.compression_to_achieve, conf.distfile);
 	}
 	init(g, &info, &conf);
 
@@ -1145,14 +1158,11 @@ int main(int argc, char *argv[])
 		loadmmap(mem, &sharedmem_size, &fd_shared, &info, &conf);
 	}
 
-	//writes can be performed over a populated file (populate=1)
-	//this functionality can be disabled if the files are already populated (populate=0)
-	//Or we can verify if the files already exist and ask?
 	if ((conf.iotype == READ && conf.populate < 0) || (conf.mixedIO == 1 && conf.populate < 0) || (conf.populate > 0))
 	{
 		populate(g, &conf, &info);
 	}
-
+	
 	//init database for generating final distribution
 	conf.dbpdist = malloc(sizeof(DB *));
 	conf.envpdist = malloc(sizeof(DB_ENV *));

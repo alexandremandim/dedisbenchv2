@@ -25,10 +25,6 @@ void init(generator_t *g, duplicates_info *info, struct user_confs *conf)
 		printf("Error: initialize generator.\n");
 		exit(0);
 	}
-	else
-	{
-		printf("Initialize generator library with success.\n");
-	}
 
 	/* Initialize info->statistics to zero */
 	int z;

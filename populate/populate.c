@@ -185,6 +185,7 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
 void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *info)
 {
 
+	printf("----------Populating----------\n");
 	int i;
 	int fd;
 	int nprocs = 0;
@@ -225,7 +226,7 @@ void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *i
 			}
 			else
 			{
-				printf("populating file %s with realistic content\n", name);
+				printf("Populating file %s with realistic content\n", name);
 				fd = create_pfile(i, conf);
 				bytes_populated += real_populate(g, fd, conf, info, i);
 				fsync(fd);
@@ -243,7 +244,7 @@ void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *i
 		else
 		{
 
-			printf("populating device %s with realistic content\n", conf->rawpath);
+			printf("Populating device %s with realistic content\n", conf->rawpath);
 
 			fd = open_rawdev(conf->rawpath, conf);
 			bytes_populated += real_populate(g, fd, conf, info, 0);
@@ -252,5 +253,6 @@ void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *i
 		}
 	}
 
-	printf("File/device(s) population is completed wrote %llu bytes\n", (unsigned long long int)bytes_populated);
+	printf("File/device(s) population is completed wrote %llu bytes (%.2f MB)\n", (unsigned long long int)bytes_populated, bytes_populated/1e6);
+	printf("------------------------------\n");
 }

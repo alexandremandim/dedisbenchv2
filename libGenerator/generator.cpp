@@ -283,9 +283,8 @@ tuple<double, double> Generator::get_media_inter(int percentage_interval)
 		}
 	}
 	std::cout << "Compression interval estimated based on " << nr_pairs << " pairs of block."
-			  << "\t";
-	std::cout << "Estimated Compression Interval: [" << minimum / nr_pairs << ", " << maximum / nr_pairs << "]" << endl
-			  << endl;
+			  << "\t" << endl;
+	std::cout << "Estimated Compression Interval: [" << minimum / nr_pairs << ", " << maximum / nr_pairs << "]" << endl;
 
 	return make_tuple(minimum / nr_pairs, maximum / nr_pairs);
 }
@@ -358,7 +357,6 @@ int Generator::initialize(duplicates_info *info, struct user_confs *conf)
 		return -1;
 	}
 
-	std::cout << std::endl << "Reading file..." << globalArgs.readPath << endl;
 	while (getline(fin, line))
 	{
 		Linha newLine;
@@ -399,17 +397,23 @@ int Generator::initialize(duplicates_info *info, struct user_confs *conf)
 		this->weights.push_back(probabilidadeLinha);
 	}
 
+	cout << endl << "----------Deduplication----------" << endl;
+	cout << "Total blocks: " << globalArgs.blocosAGerar << " (" << (globalArgs.blocosAGerar * globalArgs.blockSize / 1e6) << " MB)" << endl ;
+	cout << "Blocks with no duplicates: " << globalArgs.zeroCopiesBlocks << endl;
+	cout << "Different blocks with duplicates: " << globalArgs.total_unique_blocks - globalArgs.zeroCopiesBlocks << endl;
+	cout << "-----------------------------------------" << endl << endl;
+ 
 	/* Initialize discrete_distribution to generate random lines based on their weights (used in getLinha function) */
 	distribution_linhas = discrete_distribution<int>(weights.begin(), weights.end());
 
-	std::cout << "Total blocks:\t" << globalArgs.blocosAGerar << "\t"
-			  << "Unique blocks:\t" << globalArgs.total_unique_blocks << endl;
-
 	/* Calcular o intervalo esperado de compressão entre blocos*/
+	cout  << "----------Compression----------" << endl;
 	compressions_inter_blocks_interval = get_media_inter(globalArgs.percentage_unique_blocks_analyze);
 
 	/* Generating Block Models */
 	int returnLoadModels = loadModels(conf);
+	cout << "--------------------------------" << endl << endl;
+
 
 	/* Fill struct duplicates_info */
 	info->zero_copy_blocks = globalArgs.zeroCopiesBlocks;

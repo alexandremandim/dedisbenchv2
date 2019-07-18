@@ -152,6 +152,7 @@ faz o teste de integrity STATIC. No fim escreve para esses ficheiros os erros en
 
 int static_check(generator_t *g, struct user_confs *conf, struct duplicates_info *info)
 {
+    printf("\n----------Static Integrity----------\n");
     int i;
     int fd;
     int nprocs = 0;
@@ -220,6 +221,7 @@ int static_check(generator_t *g, struct user_confs *conf, struct duplicates_info
 
     fclose(fpi);
     printf("File/device(s) integrity check is completed\n");
+    printf("------------------------------------\n");
 
     return integrity_errors;
 }
