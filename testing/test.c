@@ -5,7 +5,6 @@
 double single_test(generator_t *g, struct user_confs *conf, int nr_ciclos){
 
 	clock_t tempo_total;
-	clock_t tempo_por_operacao;
 	unsigned char *buf;				
 	struct block_info info_write;
 	struct stats stat = {.beginio = -1};

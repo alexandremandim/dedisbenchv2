@@ -530,7 +530,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 		}
 		fclose(fpi);
 	}
-	printf("------------------------\n", procid_r);
+	printf("------------------------\n");
 
 	//init acesses array
 	free(acessesarray);
@@ -609,7 +609,7 @@ void launch_benchmark(generator_t *g, struct user_confs *conf, struct duplicates
 
 	/* Wait for children to exit. */
 	int status;
-	pid_t pid;
+	pid_t pid = -1;
 	int nprocstowait = conf->nprocs;
 	while (nprocstowait > 0)
 	{
@@ -680,12 +680,12 @@ static int remove_dir(const char *path)
 			{
 				struct stat statbuf;
 				snprintf((char *)buf, len, "%s/%s", path, p->d_name);
-				if (!stat(buf, &statbuf))
+				if (!stat((char *)buf, &statbuf))
 				{
 					if (S_ISDIR(statbuf.st_mode))
-						r2 = remove_dir(buf);
+						r2 = remove_dir((char *)buf);
 					else
-						r2 = unlink(buf);
+						r2 = unlink((char *)buf);
 				}
 				free(buf);
 			}
