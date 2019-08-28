@@ -143,7 +143,8 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
 		unsigned char *buf;
 		struct block_info info_write;
 
-		write_request(g, &buf, idproc, &info_write, conf, &stat);
+		//write_request(g, &buf, idproc, &info_write, conf, &stat);
+		get_writecontent(&buf, g, idproc, &info_write);
 
 		if (conf->distout == 1)
 		{

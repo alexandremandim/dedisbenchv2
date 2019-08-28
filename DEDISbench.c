@@ -806,12 +806,16 @@ static int config_handler(void *config, const char *section, const char *name, c
 		{
 		case 0:
 			conf->accesstype = SEQUENTIAL;
+			printf("\nAccess type: Sequential\n");
+
 			break;
 		case 1:
 			conf->accesstype = UNIFORM;
+			printf("\nAccess type: Uniform\n");
 			break;
 		case 2:
 			conf->accesstype = TPCC;
+			printf("\nAccess type: TPCC\n");
 			break;
 		default:
 			perror("Unknown type of pattern acess for I/O operations");
