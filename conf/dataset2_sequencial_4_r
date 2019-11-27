@@ -1,0 +1,13 @@
+[execution]
+distfile=conf/dataset2
+access_type=0
+nprocs=4
+filesize=250
+blocksize=4096
+populate=1
+compression_to_achieve = 50
+percentage_analyze = 5
+[results]
+tempfilespath=/home/alex/Desktop/bug/
+[structural]
+cleantemp=0

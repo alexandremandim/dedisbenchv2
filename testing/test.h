@@ -6,6 +6,6 @@
 #include "libGenerator/generatorW.h"
 #include "benchcore/io.h"
 
-void launch_test_speed(generator_t *g, struct user_confs *conf, int nr_ciclos);
+void launch_test_speed(generator_t *g, struct user_confs *conf);
 
 #endif

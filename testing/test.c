@@ -2,7 +2,8 @@
 
 
 /* Retorna tempo de resposta */
-double single_test(generator_t *g, struct user_confs *conf, int nr_ciclos){
+/* Este metodo vai realiar um milhao de iteracoes e vai devolver o tempo_resposta*/
+double single_test(generator_t *g, struct user_confs *conf, int nrChamadas){
 
 	clock_t tempo_total;
 	unsigned char *buf;				
@@ -12,7 +13,10 @@ double single_test(generator_t *g, struct user_confs *conf, int nr_ciclos){
 	/* TEMPO DE RESPOSTA E DEBITO */
 
     tempo_total = clock(); 
-	for(int i = 0; i < nr_ciclos; i++)	write_request(g, &buf, 0, &info_write, conf, &stat);
+	for(int i = 0; i < nrChamadas; i++){
+		write_request(g, &buf, 0, &info_write, conf, &stat);
+	}	
+		
 	tempo_total = clock() - tempo_total;
     
 	double tempo_de_resposta = ((double)tempo_total)/CLOCKS_PER_SEC;
@@ -20,37 +24,31 @@ double single_test(generator_t *g, struct user_confs *conf, int nr_ciclos){
 }
 
 /* Debito, Tempo de resposta, Media e DP p operacao */
-void launch_test_speed(generator_t *g, struct user_confs *conf, int nr_ciclos){
+void launch_test_speed(generator_t *g, struct user_confs *conf)
+{
 
 	printf("Started test speed\n\n");
+	
+    int nrChamadas = 1000000;
+	double nrIteracoes = 100;
+	double debitosOperacao[100];
+	double somatorioDebitos = 0;
 
 	/* Ciclo principal */
-	int x = 10, i;
-	double temposOperacao[x];	
-	double debitosOperacao[x];
-	for(i = 0; i < x; i++){
-		temposOperacao[i] = single_test(g, conf, nr_ciclos);
-		debitosOperacao[i] = (double)nr_ciclos/temposOperacao[i];
+	for(int i = 0; i < nrIteracoes; i++){
+		debitosOperacao[i] = ((double)1000000)/(single_test(g, conf, nrChamadas));
+		somatorioDebitos += debitosOperacao[i];
 	}
 
-	/* Ciclo para calcular a media */
-	double aux_media_tr = 0, aux_media_deb = 0;
-	for(i = 0; i < x; i++){
-		aux_media_tr += temposOperacao[i];
-		aux_media_deb += debitosOperacao[i];
-	}
-	double tr_medio =  aux_media_tr/10; /* Media em segundos */
-	double debito_medio = aux_media_deb/10;	/* Op / seg */
-	printf("Débito médio: %.2f Op / s.\n", debito_medio);
-	printf("TR médio:  %.6f s / %d operações.\n", tr_medio, nr_ciclos);
-	printf("TR médio p/ operação: %.6f us.\n", (1/debito_medio)*(double)1000000);
+    double mediaDebito = somatorioDebitos/nrIteracoes;
+	printf("Débito: %.2f Op / s.\n", mediaDebito);
 
-	/* Calculo do desvio padrão */
-	double aux_desvio_padrao = 0;
-	for(int i = 0; i < x; i++){
-		aux_desvio_padrao += pow((temposOperacao[i] - tr_medio),2);
+	double somatorioDesvioPadrao = 0;
+	for(int z = 0; z < nrIteracoes; z++){
+		somatorioDesvioPadrao += pow((debitosOperacao[z] - mediaDebito),2);
 	}
-	double desvio_padrao_operacao = sqrt((aux_desvio_padrao/x));
 
-	printf("Desvio Padrão TR médio: %.6f.\n" , desvio_padrao_operacao);
+	double desvioPadraoDebito = sqrt(somatorioDesvioPadrao/nrIteracoes);
+
+	printf("Desvio Padrão: %.6f.\n", desvioPadraoDebito);
 }

@@ -1172,10 +1172,10 @@ int main(int argc, char *argv[])
 	conf.envpdist = malloc(sizeof(DB_ENV *));
 
 	remove_db(DISTDB, conf.dbpdist, conf.envpdist);
+	
+	launch_test_speed(g, &conf);
 
-	//launch_test_speed(g, &conf, 1000000);
-
-	launch_benchmark(g, &conf, &info);
+	// launch_benchmark(g, &conf, &info);
 
 	if (conf.distout == 1)
 	{
