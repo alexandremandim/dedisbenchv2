@@ -13,7 +13,8 @@ double single_test(generator_t *g, struct user_confs *conf, int nrChamadas){
 	/* TEMPO DE RESPOSTA E DEBITO */
 
     tempo_total = clock(); 
-	for(int i = 0; i < nrChamadas; i++){
+	for(int i = 0; i < nrChamadas; i++)
+	{
 		write_request(g, &buf, 0, &info_write, conf, &stat);
 	}	
 		
@@ -37,6 +38,8 @@ void launch_test_speed(generator_t *g, struct user_confs *conf)
 	/* Ciclo principal */
 	for(int i = 0; i < nrIteracoes; i++){
 		debitosOperacao[i] = ((double)1000000)/(single_test(g, conf, nrChamadas));
+		printf("Débito: %.2f Op / s.\n", debitosOperacao[i]);
+		return;
 		somatorioDebitos += debitosOperacao[i];
 	}
 
