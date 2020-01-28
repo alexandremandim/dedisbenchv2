@@ -1165,10 +1165,6 @@ int main(int argc, char *argv[])
 	if (conf.termination_type == TIME)
 	{
 		conf.time_to_run = conf.time_to_run * 60;
-
-		/* TODO: Qual o numero de ops que passo no caso do tempo??? */
-		/* Inicialização do Generator */
-		// g = get_generator(conf.block_size, ????? , conf.percentage_analyze, conf.compression_to_achieve, conf.distfile);
 	}
 
 	if (conf.distf != 1)
@@ -1179,13 +1175,13 @@ int main(int argc, char *argv[])
 	if (conf.termination_type == SIZE)
 	{
 		conf.number_ops = (conf.number_ops * 1024 * 1024) / conf.block_size;
-
-		/* Inicialização do Generator */
-		int nrfiles;
-		if(conf.mixedIO==1) nrfiles=conf.nprocs/2;
-		else	nrfiles=conf.nprocs;
-		g = get_generator(conf.block_size, conf.totblocks * nrfiles , conf.percentage_analyze, conf.compression_to_achieve, conf.distfile);
 	}
+	
+	/* Inicialização do Generator */
+	int nrfiles;
+	if(conf.mixedIO==1) nrfiles=conf.nprocs/2;
+	else	nrfiles=conf.nprocs;
+	g = get_generator(conf.block_size, conf.totblocks * nrfiles , conf.percentage_analyze, conf.compression_to_achieve, conf.distfile);
 	init(g, &info, &conf);
 
 	if (conf.distout == 1 || conf.integrity >= 1)
