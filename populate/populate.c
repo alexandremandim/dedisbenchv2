@@ -185,6 +185,10 @@ uint64_t real_populate(generator_t *g, int fd, struct user_confs *conf, struct d
 //populate files with content
 void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *info)
 {
+	/* Initial time */
+    uint64_t prev_time_value, time_value;
+	uint64_t time_diff;
+	prev_time_value = get_posix_clock_time();
 
 	printf("----------Populating----------\n");
 	int i;
@@ -253,6 +257,13 @@ void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *i
 			close(fd);
 		}
 	}
+    /* Final time */
+	time_value = get_posix_clock_time();
+
+	/* Time difference */
+	time_diff = time_value - prev_time_value;
+    double throughput = (double)bytes_populated/(time_diff/1e6)/1e6;
+    printf("Took %.2f sec (%.2f min) to populate.\nThroughput %.2f MB/s \n", time_diff/1e6, (time_diff/1e6)/60,throughput);
 
 	printf("File/device(s) population is completed wrote %llu bytes (%.2f MB)\n", (unsigned long long int)bytes_populated, bytes_populated/1e6);
 	printf("------------------------------\n");

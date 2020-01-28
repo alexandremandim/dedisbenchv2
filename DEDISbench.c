@@ -37,6 +37,18 @@
 
 #include "testing/test.h"
 
+
+uint64_t get_posix_clock_time ()
+{
+    struct timespec ts;
+
+    if (clock_gettime (CLOCK_MONOTONIC, &ts) == 0)
+        return (uint64_t) (ts.tv_sec * 1000000 + ts.tv_nsec / 1000);
+    else
+        return 0;
+}
+
+
 //time elapsed since last I/O
 long lap_time(struct timeval *base)
 {
@@ -79,6 +91,12 @@ FILE *create_plog(int procid)
 //run a a peak test
 void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype, struct user_confs *conf, struct duplicates_info *info)
 {
+	uint64_t prev_time_value, time_value;
+	uint64_t time_diff;
+
+	/* Initial time */
+	prev_time_value = get_posix_clock_time ();
+
 	initialize_random(g);
 	int fd_test;
 	int procid_r = idproc;
@@ -488,8 +506,11 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 		
 		printf("Throughput: %.3f blocks/second (%.2f MB/second)\n", stat.throughput, stat.throughput*conf->block_size/1e6);
 		printf("Latency: %.3f miliseconds\n", stat.latency);
-		if(iotype==READ)
+		if(iotype==READ){
 			printf("Misses read: %llu\n", (long long unsigned int)stat.misses_read);
+		}
+
+		
 
 		if (conf->printtofile == 1)
 		{
@@ -530,6 +551,12 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 		}
 		fclose(fpi);
 	}
+	/* Final time */
+	time_value = get_posix_clock_time ();
+
+	/* Time difference */
+	time_diff = time_value - prev_time_value;
+    printf("Took %.2f sec (%.2f min) to execute process.\n", time_diff/1e6, (time_diff/1e6)/60); 	
 	printf("------------------------\n");
 
 	//init acesses array
@@ -542,7 +569,6 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 
 void launch_benchmark(generator_t *g, struct user_confs *conf, struct duplicates_info *info)
 {
-
 	int i;
 	//launch processes for each file bench
 	int nprocinit = 0;
@@ -632,7 +658,6 @@ void launch_benchmark(generator_t *g, struct user_confs *conf, struct duplicates
 			destroy_pfile(i, conf);
 		}
 	}
-
 	printf("\nExiting benchmark\n");
 }
 
@@ -900,6 +925,12 @@ static int config_handler(void *config, const char *section, const char *name, c
 
 int main(int argc, char *argv[])
 {
+	uint64_t prev_time_value, time_value;
+	uint64_t time_diff;
+
+	/* Initial time */
+	prev_time_value = get_posix_clock_time ();
+
 	uint64_t **mem = malloc(sizeof(uint64_t *));
 	uint64_t sharedmem_size;
 	int fd_shared;
@@ -1173,9 +1204,9 @@ int main(int argc, char *argv[])
 
 	remove_db(DISTDB, conf.dbpdist, conf.envpdist);
 	
-	launch_test_speed(g, &conf);
+	//launch_test_speed(g, &conf);
 
-	// launch_benchmark(g, &conf, &info);
+	launch_benchmark(g, &conf, &info);
 
 	if (conf.distout == 1)
 	{
@@ -1218,5 +1249,13 @@ int main(int argc, char *argv[])
 	free(conf.dbpdist);
 	free(conf.envpdist);
 	free(mem);
+
+	/* Final time */
+	time_value = get_posix_clock_time();
+
+	/* Time difference */
+	time_diff = time_value - prev_time_value;
+    printf("Took %.2f sec (%.2f min) to execute all DEDISbench.\n", time_diff/1e6, (time_diff/1e6)/60); 	
+
 	return 0;
 }
