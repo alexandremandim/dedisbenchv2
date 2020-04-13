@@ -76,7 +76,6 @@ struct user_confs{
     //size of benchmark
     uint64_t number_ops;
 
-    int termination_type;
     //Optional parameters
     //duplicates distribution file (default homer file DFILE)
     //Number of processes (default 4)
