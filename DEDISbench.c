@@ -1183,7 +1183,19 @@ int main(int argc, char *argv[])
 
 	if ((conf.iotype == READ && conf.populate < 0) || (conf.mixedIO == 1 && conf.populate < 0) || (conf.populate > 0))
 	{
-		populate(g, &conf, &info);
+		uint64_t prev_time_value, time_value, time_diff;
+		
+		prev_time_value = get_posix_clock_time();
+		
+		uint64_t bytes_populated = populate(g, &conf, &info);
+
+		time_value = get_posix_clock_time();
+		time_diff = time_value - prev_time_value;
+
+		printf("File/device(s) population is completed wrote %llu bytes (%.2f MB)\n", (
+			unsigned long long int)bytes_populated, bytes_populated/1e6);
+		printf("Took %.2f sec (%.2f min) to populate.\n", time_diff/1e6, (time_diff/1e6)/60);
+		printf("Populate troughput %.2f MB/sec.\n", (double)(bytes_populated/1e6)/(time_diff/1e6));
 	}
 	
 	//init database for generating final distribution

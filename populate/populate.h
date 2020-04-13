@@ -24,6 +24,6 @@ int create_pfile(int procid, struct user_confs *conf);
 int destroy_pfile(int procid, struct user_confs *conf);
 
 //populate files/dev
-void populate(generator_t *g, struct user_confs *conf, struct duplicates_info *info);
+uint64_t populate(generator_t *g, struct user_confs *conf, struct duplicates_info *info);
 
 #endif
