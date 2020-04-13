@@ -1206,9 +1206,9 @@ int main(int argc, char *argv[])
 	
 	printf("Dafuq\n");
 
-	launch_test_speed(g, &conf);
+	// launch_test_speed(g, &conf);
 
-	// launch_benchmark(g, &conf, &info);
+	launch_benchmark(g, &conf, &info);
 
 	if (conf.distout == 1)
 	{
