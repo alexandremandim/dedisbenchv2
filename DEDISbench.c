@@ -1204,9 +1204,11 @@ int main(int argc, char *argv[])
 
 	remove_db(DISTDB, conf.dbpdist, conf.envpdist);
 	
-	//launch_test_speed(g, &conf);
+	printf("Dafuq\n");
 
-	launch_benchmark(g, &conf, &info);
+	launch_test_speed(g, &conf);
+
+	// launch_benchmark(g, &conf, &info);
 
 	if (conf.distout == 1)
 	{

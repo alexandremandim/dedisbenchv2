@@ -30,8 +30,8 @@ void launch_test_speed(generator_t *g, struct user_confs *conf)
 
 	printf("Started test speed\n\n");
 	
-    int nrChamadas = 10000000;
-	double nrIteracoes = 100;
+    int nrChamadas = 1000000;
+	double nrIteracoes = 10;
 	double debitosOperacao[100];
 	double somatorioDebitos = 0;
 
@@ -39,7 +39,6 @@ void launch_test_speed(generator_t *g, struct user_confs *conf)
 	for(int i = 0; i < nrIteracoes; i++){
 		debitosOperacao[i] = ((double)nrChamadas)/(single_test(g, conf, nrChamadas));
 		printf("Débito: %.2f Op / s.\n", debitosOperacao[i]);
-		return;
 		somatorioDebitos += debitosOperacao[i];
 	}
 
