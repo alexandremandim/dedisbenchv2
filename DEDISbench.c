@@ -1203,8 +1203,6 @@ int main(int argc, char *argv[])
 	conf.envpdist = malloc(sizeof(DB_ENV *));
 
 	remove_db(DISTDB, conf.dbpdist, conf.envpdist);
-	
-	printf("Dafuq\n");
 
 	// launch_test_speed(g, &conf);
 
