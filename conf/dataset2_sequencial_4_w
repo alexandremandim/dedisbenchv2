@@ -2,7 +2,7 @@
 distfile=conf/dataset2
 access_type=0
 nprocs=4
-filesize=250
+filesize=1000
 blocksize=4096
 populate=0
 compression_to_achieve = 50

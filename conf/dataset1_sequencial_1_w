@@ -8,6 +8,6 @@ populate=0
 compression_to_achieve = 50
 percentage_analyze = 5
 [results]
-tempfilespath=/dev/null
+tempfilespath=/home/alex/Desktop/bug/
 [structural]
 cleantemp=0
