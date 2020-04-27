@@ -256,8 +256,6 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 				iooffset = write_request(g, &buf, idproc, &info_write, conf, &stat);
 				block_id = info_write.block_id;
 
-				printf("Proc: %d -> Offset: %d", idproc, iooffset);
-
 				//block_id is the index of sum where the block belongs
 				//put in statistics this value ==1 to know when a duplicate is found
 				//TODO this depends highly on the id generation and should be transparent
@@ -294,6 +292,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 				uint64_t t1 = tim.tv_sec * 1000000 + (tim.tv_usec);
 
 				int res = pwrite(fd_test, buf, conf->block_size, iooffset);
+
 				if (conf->fsyncf == 1)
 				{
 					fsync(fd_test);
@@ -316,9 +315,10 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 				//t1snap must take value of t2 because we want to get the time when requets are processed
 				stat.t1snap = t2;
 
-				if (res == 0 || res == -1)
+				if (res == 0 || res == -1){
 					perror("Error writing block ");
-					printf("Error: %s\n", strerror(errno));
+					printf("RES: %d \t Error: %s\n", res,  strerror(errno));
+				}
 
 				if (stat.beginio == -1)
 				{
@@ -354,8 +354,6 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 				uint64_t t1 = tim.tv_sec * 1000000 + (tim.tv_usec);
 
 				uint64_t res = pread(fd_test, buf, conf->block_size, iooffset);
-
-				printf("Proc: %d -> Offset: %d \n", idproc, iooffset/4096);
 
 				//latency calculation
 				gettimeofday(&tim, NULL);
