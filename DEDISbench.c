@@ -318,7 +318,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 
 				if (res == 0 || res == -1)
 					perror("Error writing block ");
-					printf("Error writing block ");
+					printf("Error: %s\n", strerror(errno));
 
 				if (stat.beginio == -1)
 				{
@@ -354,6 +354,8 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 				uint64_t t1 = tim.tv_sec * 1000000 + (tim.tv_usec);
 
 				uint64_t res = pread(fd_test, buf, conf->block_size, iooffset);
+
+				printf("Proc: %d -> Offset: %d \n", idproc, iooffset/4096);
 
 				//latency calculation
 				gettimeofday(&tim, NULL);
