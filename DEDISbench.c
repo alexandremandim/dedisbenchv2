@@ -256,6 +256,8 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 				iooffset = write_request(g, &buf, idproc, &info_write, conf, &stat);
 				block_id = info_write.block_id;
 
+				printf("Proc: %d -> Offset: %d", idproc, iooffset);
+
 				//block_id is the index of sum where the block belongs
 				//put in statistics this value ==1 to know when a duplicate is found
 				//TODO this depends highly on the id generation and should be transparent
@@ -316,6 +318,7 @@ void process_run(generator_t *g, int idproc, int nproc, double ratio, int iotype
 
 				if (res == 0 || res == -1)
 					perror("Error writing block ");
+					printf("Error writing block ");
 
 				if (stat.beginio == -1)
 				{
