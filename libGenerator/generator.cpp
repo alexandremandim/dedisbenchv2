@@ -13,13 +13,15 @@
 unsigned int Generator::getRandomBlockFromLine(Linha l)
 {
 	uniform_int_distribution<unsigned int> dis(1, l.nrBlocks);
-	return dis(generator);
+	// return dis(generator);
+	return 1; // first block
 }
 
 /* Returns random line from inputfile */
 Linha Generator::getLinha()
 {
-	return linhas.at(distribution_linhas(generator));
+	return linhas.at(1);
+	// return linhas.at(distribution_linhas(generator));
 }
 
 /* Returns compression index from a block */
@@ -301,9 +303,8 @@ Generator::Generator(unsigned int blockSize, unsigned int blocosToGenerate,
 	nr_models = 100;
 }
 
-void Generator::nextBlock(unsigned char **buffer, block_info *info_write)
+void Generator:: nextBlock(unsigned char **buffer, block_info *info_write)
 {
-
 	Linha linhaAleatoria = getLinha();
 
 	unsigned int random_block_id_line = getRandomBlockFromLine(linhaAleatoria);
