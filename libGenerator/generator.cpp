@@ -164,7 +164,8 @@ unsigned char *Generator::blockModel(unsigned int blockSize, unsigned int compre
 		while (contador < compression && posicaoBuffer < (size - nrBlocosADuplicar))
 		{
 			for (int posicaoAuxiliar = 0; posicaoAuxiliar < nrBlocosADuplicar; posicaoAuxiliar++)
-				buffer[posicaoBuffer + posicaoAuxiliar] = buffer[posicaoAuxiliar];
+				buffer[posicaoBuffer + posicaoAuxiliar] = '\0';
+				// buffer[posicaoBuffer + posicaoAuxiliar] = buffer[posicaoAuxiliar];
 
 			posicaoBuffer = posicaoBuffer + nrBlocosADuplicar;
 			contador++;
